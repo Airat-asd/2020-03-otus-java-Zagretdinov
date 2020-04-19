@@ -8,5 +8,6 @@
  */
 
 rootProject.name = 'OTUS'
-include 'HW01-gradle'
+//include 'HW01-gradle'
+include 'HW02-DIYArrayList'
 

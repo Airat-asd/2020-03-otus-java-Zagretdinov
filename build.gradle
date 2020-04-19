@@ -23,10 +23,10 @@ allprojects {
         mavenCentral()
     }
 
-    apply plugin: "io.spring.dependency-management"
+    /*apply plugin: "io.spring.dependency-management"
     dependencyManagement {
         dependencies {
             dependency("com.google.guava:guava:${Versions.guava}")
         }
-    }
+    }*/
 }
