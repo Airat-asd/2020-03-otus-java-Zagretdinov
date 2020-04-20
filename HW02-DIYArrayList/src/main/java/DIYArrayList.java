@@ -32,16 +32,19 @@ public class DIYArrayList<T> implements List<T> {
             elements = EMPTY_ITEM;
         }
     }
+
     //возвращаем количество элементов списка
     @Override
     public int size() {
         return this.size;
     }
+
     //конвертируем список в массив
     @Override
     public Object[] toArray() {
         return Arrays.copyOf(elements, size);
     }
+
     //вывод списка в строку
     @Override
     public String toString() {
@@ -55,6 +58,7 @@ public class DIYArrayList<T> implements List<T> {
         }
         return buffer.toString();
     }
+
     //сортировка списка
     @Override
     public void sort(Comparator<? super T> c) {
@@ -65,6 +69,7 @@ public class DIYArrayList<T> implements List<T> {
     public boolean addAll(int index, Collection<? extends T> c) {
         throw new UnsupportedOperationException("Unsupported method");
     }
+
     //добавление элемента в список, возвращаем true
     @Override
     public boolean add(T t) {
@@ -79,6 +84,7 @@ public class DIYArrayList<T> implements List<T> {
     public void add(int index, T element) {
         throw new UnsupportedOperationException("Unsupported method");
     }
+
     //возвращаем увеличенный в 1,5 раза список
     private Object[] grow(int size) {
         int oldCapacity = elements.length;
@@ -94,11 +100,13 @@ public class DIYArrayList<T> implements List<T> {
     public boolean remove(Object o) {
         throw new UnsupportedOperationException("Unsupported method");
     }
+
     //возвращаем элемент списка по индексу
     @Override
     public T get(int index) {
         return (T) elements[index];
     }
+
     //заменяем элемент в списке по индексу, возвращая старый элемент
     @Override
     public T set(int index, T element) {
@@ -191,8 +199,9 @@ public class DIYArrayList<T> implements List<T> {
     public Spliterator<T> spliterator() {
         throw new UnsupportedOperationException("Unsupported method");
     }
+
     //возвращаем количество ячеек массива
-    public int capacity () {
+    public int capacity() {
         return elements.length;
     }
 
