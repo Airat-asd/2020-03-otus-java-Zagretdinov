@@ -23,11 +23,7 @@ import java.util.List;
 public class App {
     public static void main(String... args) {
        //реализация класса HelloOtus
-        String a1, a2;
-        a1 = "aaa";
-        a2 = "aaa";
         HelloOtus helloOtus = new HelloOtus();
-        if (helloOtus.objectEqual(a1, a2)) System.out.println("\"" + a1 + "\"" + " identical " + "\"" + a2 + "\"");
         //было в примере, не стал убирать
         List<Integer> example = new ArrayList<>();
         int min = 0;
