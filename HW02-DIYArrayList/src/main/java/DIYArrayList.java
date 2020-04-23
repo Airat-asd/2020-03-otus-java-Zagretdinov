@@ -48,7 +48,9 @@ public class DIYArrayList<T> implements List<T> {
     //вывод списка в строку
     @Override
     public String toString() {
-        if (size == 0) return "[]";
+        if (size == 0) {
+            return "[]";
+        }
         StringBuilder buffer = new StringBuilder();
         buffer.append('[');
         for (int i = 0; i < size; i++) {
@@ -73,8 +75,9 @@ public class DIYArrayList<T> implements List<T> {
     //добавление элемента в список, возвращаем true
     @Override
     public boolean add(T t) {
-        if (size == elements.length)
+        if (size == elements.length) {
             elements = grow(size + 1);
+        }
         elements[size] = t;
         size++;
         return true;

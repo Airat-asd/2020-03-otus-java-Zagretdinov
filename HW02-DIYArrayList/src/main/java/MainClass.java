@@ -38,4 +38,5 @@ public class MainClass {
         System.out.println("упорядочили: " + diyArrayList2);
     }
 
+
 }
