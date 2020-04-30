@@ -10,4 +10,5 @@
 rootProject.name = 'OTUS'
 include 'HW01-gradle'
 include 'HW02-DIYArrayList'
+include 'HW03-testFramework'
 
