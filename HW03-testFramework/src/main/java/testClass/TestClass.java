@@ -9,13 +9,17 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.List;
 
 public class TestClass {
     private Class clazz; //тестируемый класс
-    private ArrayList<Method> method = new ArrayList<>(); //массив тестируемых методов
+    private List<Method> method = new ArrayList<>(); //массив тестируемых методов
     private static int passTest = 0; //счетчик удачно прошедших тестов
     private static int failTest = 0; //счетчик не пройденных тестов
-    private int test; //общий счетчик тестов
+    private int test = 0; //общий счетчик тестов
+    private byte countBefore = 0; //счетчик аннотаций Before
+    private byte countAfter = 0; //счетчик аннотаций After
+
 
     public void incrementPassTest() { //инкрементируем счетчик удачных тестов
         passTest++;
@@ -29,41 +33,47 @@ public class TestClass {
             throws IllegalArgumentException, ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         String[] columnNames = {"Total tests Passed", "Total Successfully Completed tests", "Total Failed tests"};
         clazz = Class.forName(nameClass);
-        initMethod(foundMethod(clazz));
+        methodTestingIsPerformed(foundMethod(clazz));
         String[][] dataTable = {{String.valueOf(test), String.valueOf(passTest), String.valueOf(failTest)}, {}};
         TextTable tt = new TextTable(columnNames, dataTable); // хэлпер для вывода информации в виде таблицы
         tt.printTable();
     }
 
-    private ArrayList<Method> foundMethod(Class clazz) //находим все методы с аннотациями Before, After, Test
+    private class FoundMethodResult {
+
+    }
+
+    private List<Method> foundMethod(Class clazz) //находим все методы с аннотациями Before, After, Test
             throws NoSuchMethodException {
         Method[] methods = clazz.getDeclaredMethods();
-        for (Method i : methods) {
-            if (clazz.getMethod(i.getName()).isAnnotationPresent(Before.class)) {
-                method.add(i);
-                if (method.size() > 1) {
+        for (Method allMethods : methods) {
+            if (clazz.getMethod(allMethods.getName()).isAnnotationPresent(Before.class)) {
+                methodBefore.add(allMethods);
+                countBefore++;
+                if (methodBefore.size() > 1) {
                     throw new RuntimeException("Аннотация Before может быть только у одного метода!");
                 }
             }
         }
-        for (Method i : methods) {
-            if (clazz.getMethod(i.getName()).isAnnotationPresent(After.class)) {
-                method.add(i);
-                if (method.size() > 2) {
+        for (Method alldMethods : methods) {
+            if (clazz.getMethod(alldMethods.getName()).isAnnotationPresent(After.class)) {
+                method.add(alldMethods);
+                countAfter++;
+                if (countAfter > 1) {
                     throw new RuntimeException("Аннотация After может быть только у одного метода!");
                 }
 
             }
         }
-        for (Method i : methods) {
-            if (clazz.getMethod(i.getName()).isAnnotationPresent(Test.class)) {
-                method.add(i);
+        for (Method allFoundMethods : methods) {
+            if (clazz.getMethod(allFoundMethods.getName()).isAnnotationPresent(Test.class)) {
+                method.add(allFoundMethods);
             }
         }
         return method;
     }
 
-    private void initMethod(ArrayList<Method> method) // основная логика теста
+    private void methodTestingIsPerformed(List<Method> method) // основная логика теста
             throws IllegalArgumentException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
         Constructor constructor = clazz.getConstructor();
         test = method.size() - 2;
