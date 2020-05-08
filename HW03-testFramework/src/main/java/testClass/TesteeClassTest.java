@@ -4,7 +4,7 @@ import testClass.annotations.After;
 import testClass.annotations.Before;
 import testClass.annotations.Test;
 
-import static testClass.AssertionsDIY.*;
+import static testClass.TestClass.*;
 
 import testee.TesteeClass;
 
@@ -37,7 +37,7 @@ public class TesteeClassTest {
         assertEquals((Math.sin(2 * X - Math.exp(X) / 13)), actualFunction);
     }
 
-        @After
+    @After
     public void setDown() {
         System.out.println("Run method setDown");
     }
