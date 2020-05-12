@@ -18,3 +18,4 @@ public class KinopoiskImpl implements KinopoiskInterface {
         return "KinopoiskImpl{}";
     }
 }
+
