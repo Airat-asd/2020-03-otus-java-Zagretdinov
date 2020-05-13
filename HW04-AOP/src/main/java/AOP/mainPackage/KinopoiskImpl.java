@@ -1,8 +1,9 @@
-import annotations.Log;
+package AOP.mainPackage;
+
+import AOP.proxy.annotations.Log;
 
 public class KinopoiskImpl implements KinopoiskInterface {
 
-    @Override
     @Log
     public void runMovie(String movie) {
         System.out.println("run movie: " + movie);
@@ -18,4 +19,3 @@ public class KinopoiskImpl implements KinopoiskInterface {
         return "KinopoiskImpl{}";
     }
 }
-
