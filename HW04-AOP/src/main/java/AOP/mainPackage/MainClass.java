@@ -2,14 +2,23 @@ package AOP.mainPackage;
 
 import AOP.proxy.Ioc;
 
+import static AOP.proxy.Ioc.createMyClass;
+
 public class MainClass {
+
     public static void main(String[] args) {
-        KinopoiskInterface kinopoiskImpl = Ioc.createMyClass();
-        System.out.println("test 3");
+        System.out.println("--------------" + KinopoiskImpl.class + "-------------------");
+        KinopoiskInterface kinopoiskImpl = Ioc.<KinopoiskInterface>createMyClass(new KinopoiskImpl(), KinopoiskInterface.class);
         kinopoiskImpl.runMovie("Gone in Sixty Seconds");
-        System.out.println("test 4");
         kinopoiskImpl.stopMovie();
-        System.out.println("test 5");
+        kinopoiskImpl.nextMovie();
+        kinopoiskImpl.prevMovie();
+        System.out.println("--------------" + OkkoImpl.class + "-------------------");
+        OkkoInterface okkoImpl = Ioc.<OkkoInterface>createMyClass(new OkkoImpl(), OkkoInterface.class);
+        okkoImpl.runOkkoMovie("Matrix");
+        okkoImpl.stopOkkoMovie();
+        okkoImpl.nextOkkoMovie();
+        okkoImpl.prevOkkoMovie();
     }
 }
 
