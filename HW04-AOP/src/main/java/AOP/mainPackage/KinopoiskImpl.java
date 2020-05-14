@@ -4,7 +4,7 @@ import AOP.proxy.annotations.Log;
 
 public class KinopoiskImpl implements KinopoiskInterface {
 
-    @Log
+    @Override
     public void runMovie(String movie) {
         System.out.println("run movie: " + movie);
     }

@@ -18,7 +18,6 @@ public class Ioc {
     public static KinopoiskInterface createMyClass() {
         InvocationHandler handler = new DemoInvocationHandler(new KinopoiskImpl());
         System.out.println("test 2");
-
         return (KinopoiskInterface) Proxy.newProxyInstance(Ioc.class.getClassLoader(), new Class<?>[]{KinopoiskInterface.class}, handler);
     }
 
@@ -28,20 +27,20 @@ public class Ioc {
         DemoInvocationHandler(KinopoiskInterface myClass) {
             System.out.println("test 1");
             this.myClass = myClass;
-            System.out.println(myClass);
+            Method[] allMethods = myClass.getClass().getDeclaredMethods();
+            for (Method method : allMethods) {
+                if (method.isAnnotationPresent(Log.class)) {
+                    beforeMethods.add(method);
+
         }
 
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) throws InvocationTargetException, IllegalAccessException {
-            System.out.println(method.getName());
-            Annotation[] annotations = method.getAnnotations();
-            System.out.println(Arrays.toString(annotations));
-
             if (method.isAnnotationPresent(Log.class)) {
                 System.out.println("executed method:" + method.getName() + ", param:" + Arrays.toString(args));
                 return method.invoke(myClass, args);
             }
-            return method.invoke(myClass, args);
+            return null;
         }
 
         @Override
