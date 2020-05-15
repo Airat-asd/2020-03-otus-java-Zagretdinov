@@ -1,9 +1,6 @@
 package AOP.proxy;
 
 import AOP.proxy.annotations.Log;
-import AOP.mainPackage.KinopoiskImpl;
-import AOP.mainPackage.KinopoiskInterface;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,14 +11,12 @@ public class Ioc {
     private Ioc() {
     }
 
-    public static <T> T createMyClass(T object, Class<T> implInterface) {
-        var asd = object.getClass().getInterfaces();
-        System.out.println(Arrays.toString(asd));
-        T type = (T) object.getClass().getGenericSuperclass();
-        Class parameter = (Class)type.;
-        //        if (asd[0] instanceof T)
+    public static <T> T createMyClass(T object) {
+        //С помощью рефлексии узнаем интерфейс, который имплементирует класс получаемого
+        //в параметрах метода экземпляра
+        Class<?>[] actualInterface = (Class<?>[])(object.getClass()).getGenericInterfaces();
         InvocationHandler handler = new DemoInvocationHandler(object);
-        return (T) Proxy.newProxyInstance(Ioc.class.getClassLoader(), new Class<?>[]{asd[0]}, handler);
+        return (T) Proxy.newProxyInstance(Ioc.class.getClassLoader(), actualInterface, handler);
     }
 
     static class DemoInvocationHandler implements InvocationHandler {
@@ -30,6 +25,8 @@ public class Ioc {
 
         DemoInvocationHandler(Object myClass) {
             this.myClass = myClass;
+            //В контсрукторе находим методы с аннотацией @Log, таким образом поиск всех аннотаций @Log класса
+            //с помощью метода isAnnotationPresent происходит единожды
             Method[] allMethods = myClass.getClass().getDeclaredMethods();
             for (Method method : allMethods) {
                 if (method.isAnnotationPresent(Log.class)) {
@@ -40,6 +37,8 @@ public class Ioc {
 
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) throws InvocationTargetException, IllegalAccessException {
+           //Если входящий метод присутствует в списке "логированных" методов, то мы можем вызвать метод логирования и
+            //и в зависимости от логики программы вернуть null или method.invoke(myClass, args)
             if (joinLogMethod.contains(method.getName())) {
                 System.out.println("executed method:" + method.getName() + ", param:" + Arrays.toString(args));
             }
