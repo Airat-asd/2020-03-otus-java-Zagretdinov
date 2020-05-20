@@ -6,23 +6,23 @@ public class OkkoImpl implements OkkoInterface {
 
     @Override
     public void runOkkoMovie(String param) {
-        System.out.println("run movie: " + param);
+        System.out.println("Run method runOkkoMovie: " + param);
     }
 
     @Override
     @Log
     public void stopOkkoMovie() {
-        System.out.println("Movie stop");
+        System.out.println("Run method stopOkkoMovie");
     }
 
     @Override
     @Log
     public void nextOkkoMovie() {
-        System.out.println("Next movie");
+        System.out.println("Run method nextOkkoMovie");
     }
 
     @Override
     public void prevOkkoMovie() {
-        System.out.println("Previous movie");
+        System.out.println("Run method prevOkkoMovie");
     }
 }

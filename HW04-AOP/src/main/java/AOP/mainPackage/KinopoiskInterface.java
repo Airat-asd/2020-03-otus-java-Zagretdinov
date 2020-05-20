@@ -4,6 +4,8 @@ public interface KinopoiskInterface {
 
     void runMovie(String movie);
 
+    void runMovie();
+
     void stopMovie();
 
     void nextMovie();

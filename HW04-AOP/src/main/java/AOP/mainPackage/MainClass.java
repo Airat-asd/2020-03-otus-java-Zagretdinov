@@ -16,6 +16,7 @@ public class MainClass {
         //для вызова метода createMyClass обязательно указывать generic интерфейса
         KinopoiskInterface kinopoiskImpl = Ioc.<KinopoiskInterface>createMyClass(new KinopoiskImpl());
         kinopoiskImpl.runMovie("Gone in Sixty Seconds");
+        kinopoiskImpl.runMovie();
         kinopoiskImpl.stopMovie();
         kinopoiskImpl.nextMovie();
         kinopoiskImpl.prevMovie();

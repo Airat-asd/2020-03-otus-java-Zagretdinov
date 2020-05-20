@@ -7,23 +7,29 @@ public class KinopoiskImpl implements KinopoiskInterface, TestInterface {
     @Override
     @Log
     public void runMovie(String movie) {
-        System.out.println("run movie: " + movie);
+        System.out.println("Run method runMovie: " + movie);
+    }
+
+    @Override
+    @Log
+    public void runMovie() {
+        System.out.println("Run method runMovie");
     }
 
     @Override
     public void stopMovie() {
-        System.out.println("Movie stop");
+        System.out.println("Run method stopMovie");
     }
 
     @Override
     public void nextMovie() {
-        System.out.println("Next movie");
+        System.out.println("Run method nextMovie");
     }
 
     @Override
     @Log
     public void prevMovie() {
-        System.out.println("Previous movie");
+        System.out.println("Run method prevMovie");
     }
 
     @Override

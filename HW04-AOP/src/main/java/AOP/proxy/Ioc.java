@@ -1,10 +1,9 @@
 package AOP.proxy;
 
 import AOP.proxy.annotations.Log;
+
 import java.lang.reflect.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class Ioc {
 
@@ -14,14 +13,14 @@ public class Ioc {
     public static <T> T createMyClass(T object) {
         //С помощью рефлексии узнаем интерфейс, который имплементирует класс получаемого
         //в параметрах метода экземпляра
-        Class<?>[] actualInterface = (Class<?>[])(object.getClass()).getGenericInterfaces();
+        Class<?>[] actualInterface = (Class<?>[]) (object.getClass()).getGenericInterfaces();
         InvocationHandler handler = new DemoInvocationHandler(object);
         return (T) Proxy.newProxyInstance(Ioc.class.getClassLoader(), actualInterface, handler);
     }
 
     static class DemoInvocationHandler implements InvocationHandler {
         private final Object myClass;
-        private List<String> joinLogMethod = new ArrayList<>();
+        private Set<String> joinLogMethod = new HashSet<>();
 
         DemoInvocationHandler(Object myClass) {
             this.myClass = myClass;
@@ -30,16 +29,16 @@ public class Ioc {
             Method[] allMethods = myClass.getClass().getDeclaredMethods();
             for (Method method : allMethods) {
                 if (method.isAnnotationPresent(Log.class)) {
-                    joinLogMethod.add(method.getName());
+                    joinLogMethod.add(method.getName() + Arrays.toString(method.getGenericParameterTypes()));
                 }
             }
         }
 
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) throws InvocationTargetException, IllegalAccessException {
-           //Если входящий метод присутствует в списке "логированных" методов, то мы можем вызвать метод логирования и
+            //Если входящий метод присутствует в списке "логированных" методов, то мы можем вызвать метод логирования и
             //и в зависимости от логики программы вернуть null или method.invoke(myClass, args)
-            if (joinLogMethod.contains(method.getName())) {
+            if (joinLogMethod.contains(method.getName() + Arrays.toString(method.getGenericParameterTypes()))) {
                 System.out.println("executed method:" + method.getName() + ", param:" + Arrays.toString(args));
             }
             return method.invoke(myClass, args);
