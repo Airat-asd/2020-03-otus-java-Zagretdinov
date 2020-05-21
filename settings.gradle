@@ -12,4 +12,5 @@ include 'HW01-gradle'
 include 'HW02-DIYArrayList'
 include 'HW03-testFramework'
 include 'HW04-AOP'
+include 'HW05-ATM'
 
