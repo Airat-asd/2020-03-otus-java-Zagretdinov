@@ -9,5 +9,4 @@ public class ExeptionGiveCash extends Exception {
     public ExeptionGiveCash(String s) {
         super(s);
     }
-
 }
