@@ -4,7 +4,7 @@ import java.util.TreeMap;
 public class AcceptCash {
 
     //Принимаем банкноты разных номиналов (на каждый номинал своя ячейка) в экземпляр банкомата
-    public Map<Integer, Integer> acceptCash(ATM atm, BundleOfBanknotes bundle) {
+    public static Map<Integer, Integer> acceptCash(ATM atm, BundleOfBanknotes bundle) {
         //Контейнер банкомата с купюрами отсортированными по ящейкам
         Map<Integer, Integer> banknotesContainerBufer = new TreeMap<>((o1, o2) -> o2 - o1);
         int newQuantityBanknote = 0;
@@ -13,7 +13,7 @@ public class AcceptCash {
             banknotesContainerBufer.putAll(atm.getBanknotesContainer());
             for (Integer banknote : bundle.getBundleOfBanknotes()) {
                 if (banknotesContainerBufer.containsKey(banknote)) {
-                    newQuantityBanknote = (int) banknotesContainerBufer.get(banknote) + 1;
+                    newQuantityBanknote = banknotesContainerBufer.get(banknote) + 1;
                     banknotesContainerBufer.replace(banknote, newQuantityBanknote);
                 } else {
                     banknotesContainerBufer.put(banknote, 1);

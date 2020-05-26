@@ -36,6 +36,7 @@ public class ATMImpl implements ATM {
 
     @Override
     public void setBanknotesContainer(Map<Integer, Integer> banknotesContainer) {
+        this.banknotesContainer.clear();
         this.banknotesContainer.putAll(banknotesContainer);
     }
 }
