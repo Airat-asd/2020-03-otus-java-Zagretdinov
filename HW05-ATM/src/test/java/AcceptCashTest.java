@@ -38,12 +38,10 @@ class AcceptCashTest {
 
     Map<Integer, Integer> emptyContainer = new HashMap<>();
     BundleOfBanknotes bundle;
-    AcceptCash acceptCash;
     ATM atm;
 
     @BeforeEach
     void setUp() {
-//        acceptCash = new AcceptCash();
         atm = mock(ATM.class);
         bundle = mock(BundleOfBanknotes.class);
     }

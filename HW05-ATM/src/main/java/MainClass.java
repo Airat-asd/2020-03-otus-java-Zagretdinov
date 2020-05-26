@@ -6,7 +6,7 @@ public class MainClass {
         System.out.println("AcceptCash.acceptCash = " + AcceptCash.acceptCash(atm1, new BundleOfBanknotesImpl1()));
         System.out.println("atm1.getBalance() = " + atm1.getBalance());
         System.out.println("atm1.getBanknotesContainer() = " + atm1.getBanknotesContainer());
-        System.out.println("GiveCash.giveCash = " + GiveCash.giveCash(atm1,100));
+        System.out.println("GiveCash.giveCash = " + GiveCash.giveCash(atm1,8650));
         System.out.println("atm1.getBalance() = " + atm1.getBalance());
         System.out.println("atm1.getBanknotesContainer() = " + atm1.getBanknotesContainer());
 
