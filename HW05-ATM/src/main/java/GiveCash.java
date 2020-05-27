@@ -14,12 +14,14 @@ public class GiveCash {
                 return null;
             }
         } else {
-            Map<Integer, Integer> giveBanknotesContainer = new HashMap<>();
-            Map<Integer, Integer> giveBanknotesContainerBufer = new TreeMap<>();
+            Map<Integer, Integer> giveBanknotesContainer = new TreeMap<>((o1, o2) -> o2 - o1);
+            Map<Integer, Integer> giveBanknotesContainerBufer = new TreeMap<>((o1, o2) -> o2 - o1);
+            Map<Integer, Integer> banknotesContainer = new TreeMap<>((o1, o2) -> o2 - o1);
             int balance = atm.getBalance();
+            banknotesContainer.putAll(atm.getBanknotesContainer());
             giveBanknotesContainerBufer.putAll(atm.getBanknotesContainer());
             if (amount <= balance) {
-                for (Map.Entry banknote : atm.getBanknotesContainer().entrySet()) {
+                for (Map.Entry banknote : banknotesContainer.entrySet()) {
                     int j = (int) banknote.getValue();
                     for (int i = 0; i < (int) banknote.getValue(); i++, j--) {
                         if (amount < (int) banknote.getKey()) {
@@ -52,8 +54,7 @@ public class GiveCash {
                     throw new ExeptionGiveCash("ATM cannot issue requested amount of money");
                 } catch (ExeptionGiveCash exeptionGiveCash) {
                     exeptionGiveCash.printStackTrace();
-                }
-                finally {
+                } finally {
                     return null;
                 }
             }

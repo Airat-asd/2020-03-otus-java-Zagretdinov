@@ -1,4 +1,4 @@
-public class ExeptionInadmissibleAmount extends Exception {
+public class ExeptionInadmissibleAmount extends RuntimeException {
 
     public ExeptionInadmissibleAmount() {
     }

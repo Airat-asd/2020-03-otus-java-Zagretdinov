@@ -1,16 +1,27 @@
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import org.junit.Test;
+import java.io.IOException;
 import java.util.Map;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.*;
+
 class GiveCashTest {
     public static final int AMOUNT1 = 8800;
     public static final int AMOUNT2 = 8650;
-    public static final int BALANCE = 8800;
+    public static final int AMOUNT3 = -8650;
+
+    public static final int BALANCE1 = 8800;
+
     Map<Integer, Integer> BANKNOTESCONTAINER1 = Map.of(
             2000, 1,
             50, 2,
@@ -36,7 +47,7 @@ class GiveCashTest {
 
     @Test
     void giveCash1() {
-        when(atm.getBalance()).thenReturn(BALANCE);
+        when(atm.getBalance()).thenReturn(BALANCE1);
         when(atm.getBanknotesContainer()).thenReturn(BANKNOTESCONTAINER1);
         Map<Integer, Integer> actualgiveCash = GiveCash.giveCash(atm, AMOUNT1);
         assertEquals(BANKNOTESCONTAINER1, actualgiveCash);
@@ -44,9 +55,17 @@ class GiveCashTest {
 
     @Test
     void giveCash2() {
-        when(atm.getBalance()).thenReturn(BALANCE);
+        when(atm.getBalance()).thenReturn(BALANCE1);
         when(atm.getBanknotesContainer()).thenReturn(BANKNOTESCONTAINER1);
         Map<Integer, Integer> actualgiveCash = GiveCash.giveCash(atm, AMOUNT2);
         assertEquals(BANKNOTESCONTAINER2, actualgiveCash);
     }
+
+    @Test(expected = ExeptionInadmissibleAmount.class)
+    void giveCash3() {
+        when(atm.getBalance()).thenReturn(BALANCE1);
+        when(atm.getBanknotesContainer()).thenReturn(BANKNOTESCONTAINER1);
+//        assertThrows(ExeptionInadmissibleAmount.class, () -> GiveCash.giveCash(atm, AMOUNT3));
+    }
+
 }
