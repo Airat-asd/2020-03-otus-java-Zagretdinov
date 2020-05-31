@@ -46,10 +46,10 @@ public class ATMImpl implements ATM {
     }
 
     //Устанавливаем состояние контейнера с банкнотами
-    private void setBanknotesContainer(Map<Banknotes, Integer> newbanknotesContainer) {
-        if (!newbanknotesContainer.isEmpty()) {
+    private void setBanknotesContainer(Map<Banknotes, Integer> newBanknotesContainer) {
+        if (!newBanknotesContainer.isEmpty()) {
             balance = 0;
-            banknotesContainer.putAll(newbanknotesContainer);
+            banknotesContainer.putAll(newBanknotesContainer);
             banknotesContainer.forEach((key, value) -> balance = balance + value * key.getBanknote());
         }
     }

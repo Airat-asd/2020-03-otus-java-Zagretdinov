@@ -4,7 +4,6 @@ import java.util.TreeMap;
 
 //Выдаём запрошенную сумму минимальным количеством банкнот или выдаем ошибку если сумму нельзя выдать
 public class GiveCash {
-    //    public static Map<Integer, Integer> giveCash(ATM atm, int amount) {
     public static Map<Banknotes, Integer> giveCash(Map<Banknotes, Integer> banknotesContainer, int balance, int amount) {
         if (amount <= 0) {
             try {
