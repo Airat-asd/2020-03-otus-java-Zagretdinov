@@ -1,5 +1,4 @@
 import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * @author Ayrat Zagretdinov
@@ -7,11 +6,9 @@ import java.util.TreeMap;
  */
 public interface ATM {
 
+    void acceptCash(Map<Banknotes, Integer> bundle);
+
+    Map<Banknotes, Integer> giveCash(int amount);
+
     int getBalance();
-
-    void setBalance(int balance);
-
-    Map<Integer, Integer> getBanknotesContainer();
-
-    void setBanknotesContainer(Map<Integer, Integer> banknotesContainer);
 }

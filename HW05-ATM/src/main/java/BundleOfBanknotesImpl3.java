@@ -1,9 +1,9 @@
 import java.util.*;
 
-public class BundleOfBanknotesImpl2 implements BundleOfBanknotes {
+public class BundleOfBanknotesImpl3 implements BundleOfBanknotes {
     private Map<Banknotes, Integer> bundleOfBanknotes = Map.of(
-            Banknotes.FIFTY_50, 5,
-            Banknotes.HUNDRED_100, 5
+            Banknotes.FIFTY_50, 0,
+            Banknotes.FIVETHOUSAND_5000, 0
     );
 
     @Override

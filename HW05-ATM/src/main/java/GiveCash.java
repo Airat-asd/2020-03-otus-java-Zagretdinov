@@ -4,7 +4,8 @@ import java.util.TreeMap;
 
 //Выдаём запрошенную сумму минимальным количеством банкнот или выдаем ошибку если сумму нельзя выдать
 public class GiveCash {
-    public static Map<Integer, Integer> giveCash(ATM atm, int amount) {
+    //    public static Map<Integer, Integer> giveCash(ATM atm, int amount) {
+    public static Map<Banknotes, Integer> giveCash(Map<Banknotes, Integer> banknotesContainer, int balance, int amount) {
         if (amount <= 0) {
             try {
                 throw new ExeptionInadmissibleAmount("Inadmissible amount");
@@ -14,27 +15,17 @@ public class GiveCash {
                 return null;
             }
         } else {
-            Map<Integer, Integer> giveBanknotesContainer = new TreeMap<>((o1, o2) -> o2 - o1);
-            Map<Integer, Integer> giveBanknotesContainerBufer = new TreeMap<>((o1, o2) -> o2 - o1);
-            Map<Integer, Integer> banknotesContainer = new TreeMap<>((o1, o2) -> o2 - o1);
-            int balance = atm.getBalance();
-            banknotesContainer.putAll(atm.getBanknotesContainer());
-            giveBanknotesContainerBufer.putAll(atm.getBanknotesContainer());
+            Map<Banknotes, Integer> giveBanknotesContainer = new TreeMap<>((o1, o2) -> o2.getBanknote() - o1.getBanknote());
+            Map<Banknotes, Integer> banknotesContainerBufer = new TreeMap<>((o1, o2) -> o2.getBanknote() - o1.getBanknote());
+            banknotesContainerBufer.putAll(banknotesContainer);
             if (amount <= balance) {
-                for (Map.Entry banknote : banknotesContainer.entrySet()) {
-                    int j = (int) banknote.getValue();
-                    for (int i = 0; i < (int) banknote.getValue(); i++, j--) {
-                        if (amount < (int) banknote.getKey()) {
-                            break;
+                for (Map.Entry<Banknotes, Integer> banknote : banknotesContainerBufer.entrySet()) {
+                    for (int i = 0; i < banknote.getValue(); i++) {
+                        if (amount >= banknote.getKey().getBanknote()) {
+                            amount = amount - banknote.getKey().getBanknote();
+                            giveBanknotesContainer.put(banknote.getKey(), i + 1);
                         } else {
-                            amount = amount - (int) banknote.getKey();
-                            giveBanknotesContainer.put((Integer) banknote.getKey(), i + 1);
-                            balance = balance - (int) banknote.getKey();
-                            if ((j - 1) == 0) {
-                                giveBanknotesContainerBufer.remove(banknote.getKey());
-                            } else {
-                                giveBanknotesContainerBufer.put((Integer) banknote.getKey(), j - 1);
-                            }
+                            break;
                         }
                     }
                     if (amount == 0) {
@@ -42,12 +33,16 @@ public class GiveCash {
                     }
                 }
             } else {
-                return null;
+                try {
+                    throw new ExeptionGiveCash("ATM cannot issue requested amount of money");
+                } catch (ExeptionGiveCash exeptionGiveCash) {
+                    exeptionGiveCash.printStackTrace();
+                } finally {
+                    return null;
+                }
             }
 
             if (amount == 0) {
-                atm.setBanknotesContainer(giveBanknotesContainerBufer);
-                atm.setBalance(balance);
                 return giveBanknotesContainer;
             } else {
                 try {

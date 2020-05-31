@@ -1,6 +1,7 @@
 import java.util.List;
+import java.util.Map;
 
 public interface BundleOfBanknotes {
 
-    List<Integer> getBundleOfBanknotes();
+    Map<Banknotes, Integer> getBundleOfBanknotes();
 }

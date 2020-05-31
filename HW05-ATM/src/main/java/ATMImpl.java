@@ -7,16 +7,37 @@ import java.util.TreeMap;
  */
 public class ATMImpl implements ATM {
     //Контейнер банкомата с купюрами отсортированными по ящейкам
-    private Map<Integer, Integer> banknotesContainer = new TreeMap<>((o1, o2) -> o2 - o1);
+    private Map<Banknotes, Integer> banknotesContainer = new TreeMap<>();
     // Остаток денежных средств (баланс)
-    private int balance = 0;
+    private int balance;
 
-    public ATMImpl(Map<Integer, Integer> banknotesContainer, int balance) {
-        this.banknotesContainer.putAll(banknotesContainer);
-        this.balance = balance;
+    public ATMImpl(Map<Banknotes, Integer> banknotesContainer) {
+        setBanknotesContainer(banknotesContainer);
     }
 
     public ATMImpl() {
+        for (Banknotes banknote : Banknotes.values()) {
+            banknotesContainer.put(banknote, 0);
+        }
+        this.balance = 0;
+    }
+
+    //Прием банкнот
+    @Override
+    public void acceptCash(Map<Banknotes, Integer> bundle) {
+        if (!bundle.isEmpty()) {
+            setBanknotesContainer(AcceptCash.acceptCash(bundle, banknotesContainer));
+        }
+    }
+
+    //выдача банкнот
+    @Override
+    public Map<Banknotes, Integer> giveCash(int amount) {
+        var giveCash = GiveCash.giveCash(banknotesContainer, balance, amount);
+        if (!(giveCash == null)) {
+            setBanknotesContainer(TakeCashFromTheContainer.takeCashFromTheContainer(banknotesContainer, giveCash));
+        }
+        return giveCash;
     }
 
     @Override
@@ -24,19 +45,12 @@ public class ATMImpl implements ATM {
         return balance;
     }
 
-    @Override
-    public void setBalance(int balance) {
-        this.balance = balance;
-    }
-
-    @Override
-    public Map<Integer, Integer> getBanknotesContainer() {
-        return banknotesContainer;
-    }
-
-    @Override
-    public void setBanknotesContainer(Map<Integer, Integer> banknotesContainer) {
-        this.banknotesContainer.clear();
-        this.banknotesContainer.putAll(banknotesContainer);
+    //Устанавливаем состояние контейнера с банкнотами
+    private void setBanknotesContainer(Map<Banknotes, Integer> newbanknotesContainer) {
+        if (!newbanknotesContainer.isEmpty()) {
+            balance = 0;
+            banknotesContainer.putAll(newbanknotesContainer);
+            banknotesContainer.forEach((key, value) -> balance = balance + value * key.getBanknote());
+        }
     }
 }
