@@ -7,16 +7,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class AcceptCashTest {
     Map<Banknotes, Integer> BUNDLEOFBANKNOTES1 = Map.of(
-            Banknotes.FIFTY_50, 5,
-            Banknotes.HUNDRED_100, 5,
-            Banknotes.FIVEHUNDRED_500, 5,
-            Banknotes.THOUSAND_1000, 5,
-            Banknotes.TWOTHOUSAND_2000, 5,
-            Banknotes.FIVETHOUSAND_5000, 5
+            BanknotesImpl.FIFTY_50, 5,
+            BanknotesImpl.HUNDRED_100, 5,
+            BanknotesImpl.FIVEHUNDRED_500, 5,
+            BanknotesImpl.THOUSAND_1000, 5,
+            BanknotesImpl.TWOTHOUSAND_2000, 5,
+            BanknotesImpl.FIVETHOUSAND_5000, 5
     );
     Map<Banknotes, Integer> BUNDLEOFBANKNOTES2 = Map.of(
-            Banknotes.FIFTY_50, 5,
-            Banknotes.HUNDRED_100, 5
+            BanknotesImpl.FIFTY_50, 5,
+            BanknotesImpl.HUNDRED_100, 5
     );
     Map<Banknotes, Integer> BUNDLEOFBANKNOTES3 = new TreeMap<>();
     Map<Banknotes, Integer> BANKNOTESCONTAINER1 = new TreeMap<>();
@@ -25,18 +25,18 @@ class AcceptCashTest {
 
     @BeforeEach
     void setUp() {
-        BANKNOTESCONTAINER2.put(Banknotes.FIFTY_50, 5);
-        BANKNOTESCONTAINER2.put(Banknotes.HUNDRED_100, 5);
-        BANKNOTESCONTAINER2.put(Banknotes.FIVEHUNDRED_500, 5);
-        BANKNOTESCONTAINER2.put(Banknotes.THOUSAND_1000, 5);
-        BANKNOTESCONTAINER2.put(Banknotes.TWOTHOUSAND_2000, 5);
-        BANKNOTESCONTAINER2.put(Banknotes.FIVETHOUSAND_5000, 5);
-        BANKNOTESCONTAINER3.put(Banknotes.FIFTY_50, 10);
-        BANKNOTESCONTAINER3.put(Banknotes.HUNDRED_100, 10);
-        BANKNOTESCONTAINER3.put(Banknotes.FIVEHUNDRED_500, 5);
-        BANKNOTESCONTAINER3.put(Banknotes.THOUSAND_1000, 5);
-        BANKNOTESCONTAINER3.put(Banknotes.TWOTHOUSAND_2000, 5);
-        BANKNOTESCONTAINER3.put(Banknotes.FIVETHOUSAND_5000, 5);
+        BANKNOTESCONTAINER2.put(BanknotesImpl.FIFTY_50, 5);
+        BANKNOTESCONTAINER2.put(BanknotesImpl.HUNDRED_100, 5);
+        BANKNOTESCONTAINER2.put(BanknotesImpl.FIVEHUNDRED_500, 5);
+        BANKNOTESCONTAINER2.put(BanknotesImpl.THOUSAND_1000, 5);
+        BANKNOTESCONTAINER2.put(BanknotesImpl.TWOTHOUSAND_2000, 5);
+        BANKNOTESCONTAINER2.put(BanknotesImpl.FIVETHOUSAND_5000, 5);
+        BANKNOTESCONTAINER3.put(BanknotesImpl.FIFTY_50, 10);
+        BANKNOTESCONTAINER3.put(BanknotesImpl.HUNDRED_100, 10);
+        BANKNOTESCONTAINER3.put(BanknotesImpl.FIVEHUNDRED_500, 5);
+        BANKNOTESCONTAINER3.put(BanknotesImpl.THOUSAND_1000, 5);
+        BANKNOTESCONTAINER3.put(BanknotesImpl.TWOTHOUSAND_2000, 5);
+        BANKNOTESCONTAINER3.put(BanknotesImpl.FIVETHOUSAND_5000, 5);
     }
 
     @Test

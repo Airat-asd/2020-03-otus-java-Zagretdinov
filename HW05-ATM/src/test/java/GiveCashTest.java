@@ -21,16 +21,16 @@ class GiveCashTest {
 
     @BeforeEach
     void setUp() {
-        BANKNOTESCONTAINER2.put(Banknotes.FIFTY_50, 5);
-        BANKNOTESCONTAINER2.put(Banknotes.HUNDRED_100, 5);
-        BANKNOTESCONTAINER2.put(Banknotes.FIVEHUNDRED_500, 5);
-        BANKNOTESCONTAINER2.put(Banknotes.THOUSAND_1000, 5);
-        BANKNOTESCONTAINER2.put(Banknotes.TWOTHOUSAND_2000, 5);
-        BANKNOTESCONTAINER2.put(Banknotes.FIVETHOUSAND_5000, 5);
+        BANKNOTESCONTAINER2.put(BanknotesImpl.FIFTY_50, 5);
+        BANKNOTESCONTAINER2.put(BanknotesImpl.HUNDRED_100, 5);
+        BANKNOTESCONTAINER2.put(BanknotesImpl.FIVEHUNDRED_500, 5);
+        BANKNOTESCONTAINER2.put(BanknotesImpl.THOUSAND_1000, 5);
+        BANKNOTESCONTAINER2.put(BanknotesImpl.TWOTHOUSAND_2000, 5);
+        BANKNOTESCONTAINER2.put(BanknotesImpl.FIVETHOUSAND_5000, 5);
 
-        GIVECASH1.put(Banknotes.THOUSAND_1000,1);
-        GIVECASH1.put(Banknotes.HUNDRED_100,1);
-        GIVECASH1.put(Banknotes.FIFTY_50,1);
+        GIVECASH1.put(BanknotesImpl.THOUSAND_1000,1);
+        GIVECASH1.put(BanknotesImpl.HUNDRED_100,1);
+        GIVECASH1.put(BanknotesImpl.FIFTY_50,1);
 
     }
 

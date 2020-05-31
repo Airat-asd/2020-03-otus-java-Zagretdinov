@@ -16,7 +16,7 @@ public class ATMImpl implements ATM {
     }
 
     public ATMImpl() {
-        for (Banknotes banknote : Banknotes.values()) {
+        for (Banknotes banknote : BanknotesImpl.values()) {
             banknotesContainer.put(banknote, 0);
         }
         this.balance = 0;
@@ -33,7 +33,7 @@ public class ATMImpl implements ATM {
     //выдача банкнот
     @Override
     public Map<Banknotes, Integer> giveCash(int amount) {
-        var giveCash = GiveCash.giveCash(banknotesContainer, balance, amount);
+        Map<Banknotes, Integer> giveCash = GiveCash.giveCash(banknotesContainer, balance, amount);
         if (!(giveCash == null)) {
             setBanknotesContainer(TakeCashFromTheContainer.takeCashFromTheContainer(banknotesContainer, giveCash));
         }
