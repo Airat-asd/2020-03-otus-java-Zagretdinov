@@ -7,7 +7,12 @@ import java.util.TreeMap;
  */
 public class ATMImpl implements ATM {
     //Контейнер банкомата с купюрами отсортированными по ящейкам
-    private Map<Banknotes, Integer> banknotesContainer = new TreeMap<>();
+    private Map<Banknotes, Integer> banknotesContainer = new TreeMap<>(){{put(BanknotesImpl.FIFTY_50, 0);
+        put(BanknotesImpl.HUNDRED_100, 0);
+        put(BanknotesImpl.FIVEHUNDRED_500, 0);
+        put(BanknotesImpl.THOUSAND_1000, 0);
+        put(BanknotesImpl.TWOTHOUSAND_2000, 0);
+        put(BanknotesImpl.FIVETHOUSAND_5000, 0);}};
     // Остаток денежных средств (баланс)
     private int balance;
 
@@ -16,9 +21,6 @@ public class ATMImpl implements ATM {
     }
 
     public ATMImpl() {
-        for (Banknotes banknote : BanknotesImpl.values()) {
-            banknotesContainer.put(banknote, 0);
-        }
         this.balance = 0;
     }
 

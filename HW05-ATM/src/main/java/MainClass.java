@@ -3,9 +3,9 @@ public class MainClass {
         BundleOfBanknotes bundle1 = new BundleOfBanknotesImpl1();
         BundleOfBanknotes bundle2 = new BundleOfBanknotesImpl2();
         BundleOfBanknotes bundle3 = new BundleOfBanknotesImpl3();
-        ATMImpl atm1 = new ATMImpl(bundle1.getBundleOfBanknotes());
         ATMImpl atm2 = new ATMImpl();
-        
+        ATMImpl atm1 = new ATMImpl(bundle1.getBundleOfBanknotes());
+
         System.out.println("1---------------------------");
         System.out.println("Create ATM1, balance ATM1 = " + atm1.getBalance());
         System.out.println("Create ATM2, balance ATM2 = " + atm2.getBalance());
