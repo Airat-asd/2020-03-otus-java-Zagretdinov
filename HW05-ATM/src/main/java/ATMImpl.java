@@ -1,5 +1,6 @@
-import java.util.Map;
-import java.util.TreeMap;
+import Banknotes.*;
+
+import java.util.*;
 
 /**
  * @author Ayrat Zagretdinov
@@ -7,52 +8,67 @@ import java.util.TreeMap;
  */
 public class ATMImpl implements ATM {
     //Контейнер банкомата с купюрами отсортированными по ящейкам
-    private Map<Banknotes, Integer> banknotesContainer = new TreeMap<>(){{put(BanknotesImpl.FIFTY_50, 0);
-        put(BanknotesImpl.HUNDRED_100, 0);
-        put(BanknotesImpl.FIVEHUNDRED_500, 0);
-        put(BanknotesImpl.THOUSAND_1000, 0);
-        put(BanknotesImpl.TWOTHOUSAND_2000, 0);
-        put(BanknotesImpl.FIVETHOUSAND_5000, 0);}};
+    List<Banknotes> banknotesContainer = new ArrayList<>(Arrays.asList(
+            new Banknote50(0),
+            new Banknote100(0),
+            new Banknote500(0),
+            new Banknote1000(0),
+            new Banknote2000(0),
+            new Banknote5000(0)
+    ));
     // Остаток денежных средств (баланс)
     private int balance;
 
-    public ATMImpl(Map<Banknotes, Integer> banknotesContainer) {
-        setBanknotesContainer(banknotesContainer);
+    public ATMImpl(List<Banknotes> newBanknotesContainer) {
+        if (!(newBanknotesContainer.isEmpty() || newBanknotesContainer == null)) {
+            for (Banknotes newBanknote : newBanknotesContainer) {
+                for (Banknotes containerBanknote : this.banknotesContainer) {
+                    if (containerBanknote.getNameBanknote().equals(newBanknote.getNameBanknote())) {
+                        containerBanknote.setAmountBanknote(newBanknote.getAmountBanknote());
+                    }
+                }
+            }
+        }
     }
 
     public ATMImpl() {
-        this.balance = 0;
     }
 
     //Прием банкнот
     @Override
-    public void acceptCash(Map<Banknotes, Integer> bundle) {
-        if (!bundle.isEmpty()) {
-            setBanknotesContainer(AcceptCash.acceptCash(bundle, banknotesContainer));
-        }
+    public void acceptCash(List<Banknotes> bundle) {
+        AcceptCash.acceptCash(bundle, banknotesContainer);
     }
 
     //выдача банкнот
     @Override
-    public Map<Banknotes, Integer> giveCash(int amount) {
-        Map<Banknotes, Integer> giveCash = GiveCash.giveCash(banknotesContainer, balance, amount);
-        if (!(giveCash == null)) {
-            setBanknotesContainer(TakeCashFromTheContainer.takeCashFromTheContainer(banknotesContainer, giveCash));
-        }
+    public List<Banknotes> giveCash(int amount) {
+        var giveCash = GiveCash.giveCash(banknotesContainer, balance, amount);
+        TakeCashFromTheContainer.takeCashFromTheContainer(banknotesContainer, giveCash);
         return giveCash;
     }
 
     @Override
     public int getBalance() {
-        return balance;
+        balanceUpdate();
+        return this.balance;
     }
 
-    //Устанавливаем состояние контейнера с банкнотами
-    private void setBanknotesContainer(Map<Banknotes, Integer> newBanknotesContainer) {
-        if (!newBanknotesContainer.isEmpty()) {
-            balance = 0;
-            banknotesContainer.putAll(newBanknotesContainer);
-            banknotesContainer.forEach((key, value) -> balance = balance + value * key.getBanknote());
-        }
+    private void balanceUpdate() {
+        this.balance = 0;
+        banknotesContainer.forEach(banknote -> this.balance = this.balance + banknote.getNominalBanknote() * banknote.getAmountBanknote());
     }
 }
+
+//Устанавливаем состояние контейнера с банкнотами
+//    private void setTheNewStateOfContainer(List<Banknotes> newBanknotesContainer) {
+//        for (Banknotes newBanknote : newBanknotesContainer) {
+//            for (Banknotes containerBanknote : this.banknotesContainer) {
+//                if (containerBanknote.getNameBanknote().equals(newBanknote.getNameBanknote())) {
+//                    containerBanknote.setAmountBanknote(newBanknote.getAmountBanknote());
+//                } else {
+//                    containerBanknote.setAmountBanknote(0);
+//                }
+//            }
+//        }
+//    }

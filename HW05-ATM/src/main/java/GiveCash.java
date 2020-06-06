@@ -1,9 +1,10 @@
-import java.util.Map;
-import java.util.TreeMap;
+import Banknotes.*;
+
+import java.util.*;
 
 //Выдаём запрошенную сумму минимальным количеством банкнот или выдаем ошибку если сумму нельзя выдать
 public class GiveCash {
-    public static Map<Banknotes, Integer> giveCash(Map<Banknotes, Integer> banknotesContainer, int balance, int amount) {
+    public static List<Banknotes> giveCash(List<Banknotes> banknotesContainer, int balance, int amount) {
         if (amount <= 0) {
             try {
                 throw new ExeptionInadmissibleAmount("Inadmissible amount");
@@ -13,35 +14,47 @@ public class GiveCash {
                 return null;
             }
         } else {
-            Map<Banknotes, Integer> giveBanknotesContainer = new TreeMap<>((o1, o2) -> o2.getBanknote() - o1.getBanknote());
-            Map<Banknotes, Integer> banknotesContainerBufer = new TreeMap<>((o1, o2) -> o2.getBanknote() - o1.getBanknote());
-            banknotesContainerBufer.putAll(banknotesContainer);
+            Map<Integer, Integer> banknotesContainerBufer = new TreeMap<>((o1, o2) -> o2 - o1);//ключ - номинал банкноты, значние - количество банкнот
+            Map<Integer, Integer> giveBanknotesBundleBufer = new TreeMap<>(); //ключ - номинал банкноты, значние - количество банкнот
+            List<Banknotes> giveBanknotesBundle = new ArrayList<>();
+            banknotesContainer.forEach(banknote -> banknotesContainerBufer.put(banknote.getNominalBanknote(), banknote.getAmountBanknote()));
             if (amount <= balance) {
-                for (Map.Entry<Banknotes, Integer> banknote : banknotesContainerBufer.entrySet()) {
-                    for (int i = 0; i < banknote.getValue(); i++) {
-                        if (amount >= banknote.getKey().getBanknote()) {
-                            amount = amount - banknote.getKey().getBanknote();
-                            giveBanknotesContainer.put(banknote.getKey(), i + 1);
+                for (Map.Entry<Integer, Integer> banknote : banknotesContainerBufer.entrySet()) {
+                    giveBanknotesBundleBufer.put(banknote.getKey(), 0);
+                    for (int amountBanknote = 0; amountBanknote < banknote.getValue(); amountBanknote++) {
+                        if (amount >= banknote.getKey()) {
+                            amount = amount - banknote.getKey();
+                            giveBanknotesBundleBufer.put(banknote.getKey(), giveBanknotesBundleBufer.get(banknote.getKey()) + 1);
                         } else {
                             break;
                         }
                     }
                     if (amount == 0) {
-                        break;
+                        giveBanknotesBundleBufer.forEach((o1, o2) -> {
+                            switch (o1) {
+                                case 50:
+                                    giveBanknotesBundle.add(new Banknote50(o2));
+                                    break;
+                                case 100:
+                                    giveBanknotesBundle.add(new Banknote100(o2));
+                                    break;
+                                case 500:
+                                    giveBanknotesBundle.add(new Banknote500(o2));
+                                    break;
+                                case 1000:
+                                    giveBanknotesBundle.add(new Banknote1000(o2));
+                                    break;
+                                case 2000:
+                                    giveBanknotesBundle.add(new Banknote2000(o2));
+                                    break;
+                                case 5000:
+                                    giveBanknotesBundle.add(new Banknote5000(o2));
+                                    break;
+                            }
+                        });
+                        return giveBanknotesBundle;
                     }
                 }
-            } else {
-                try {
-                    throw new ExeptionGiveCash("ATM cannot issue requested amount of money");
-                } catch (ExeptionGiveCash exeptionGiveCash) {
-                    exeptionGiveCash.printStackTrace();
-                } finally {
-                    return null;
-                }
-            }
-
-            if (amount == 0) {
-                return giveBanknotesContainer;
             } else {
                 try {
                     throw new ExeptionGiveCash("ATM cannot issue requested amount of money");
@@ -52,5 +65,6 @@ public class GiveCash {
                 }
             }
         }
+        return null;
     }
 }

@@ -1,4 +1,7 @@
-import java.util.Map;
+import Banknotes.Banknotes;
+
+import java.util.List;
+import java.util.SortedSet;
 
 /**
  * @author Ayrat Zagretdinov
@@ -6,9 +9,9 @@ import java.util.Map;
  */
 public interface ATM {
 
-    void acceptCash(Map<Banknotes, Integer> bundle);
+    void acceptCash(List<Banknotes> bundle);
 
-    Map<Banknotes, Integer> giveCash(int amount);
+    List<Banknotes> giveCash(int amount);
 
     int getBalance();
 }

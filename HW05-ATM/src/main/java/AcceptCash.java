@@ -1,16 +1,23 @@
-import java.util.Map;
+import Banknotes.Banknotes;
 
-public class AcceptCash {
+import java.util.List;
+
+
+class AcceptCash {
     //Принимаем банкноты разных номиналов (на каждый номинал своя ячейка) в экземпляр банкомата
-    public static Map<Banknotes, Integer> acceptCash(Map<Banknotes, Integer> bundle, Map<Banknotes, Integer> banknotesContainer) {
+    static void acceptCash(List<Banknotes> bundle, List<Banknotes> banknotesContainer) {
         if (!bundle.isEmpty()) {
             if (!banknotesContainer.isEmpty()) {
-                bundle.forEach((bundleKey, bundleValue) -> banknotesContainer.compute(bundleKey,
-                        (containerKey, containerValue) -> (containerValue + bundleValue)));
-            } else {
-                banknotesContainer.putAll(bundle);
+                for (Banknotes banknoteBundle : bundle) {
+                    for (Banknotes banknoteContainer : banknotesContainer) {
+                        if (banknoteContainer.getNameBanknote().equals(banknoteBundle.getNameBanknote())) {
+                            if (!banknoteContainer.addBanknotes(banknoteBundle.getAmountBanknote())) {
+                                throw new MoneyAcceptanceError("Money acceptance error");
+                            }
+                        }
+                    }
+                }
             }
         }
-        return banknotesContainer;
     }
 }
