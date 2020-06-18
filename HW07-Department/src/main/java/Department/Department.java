@@ -9,24 +9,29 @@ import java.util.List;
  * @author Ayrat Zagretdinov
  * created on 06.06.2020
  */
-public class Department {
-    private final List<Listener> department = new ArrayList<>();
+public class Department implements Listener {
+    private final List<ATM> department = new ArrayList<>();
     private String name;
 
     public Department(String name) {
         this.name = name;
     }
 
-    public Department(String name, List<Listener> atm) {
+    public Department(String name, List<ATM> atm) {
         this.name = name;
         department.addAll(atm);
+    }
+
+    public Department(Department department) {
+        this.name = department.getName();
+        this.department.addAll(department.getATM());
     }
 
     public String getName() {
         return name;
     }
 
-    void addATM(Listener atm) {
+    void addATM(ATM atm) {
         department.add(atm);
     }
 
@@ -38,10 +43,16 @@ public class Department {
         department.forEach(o -> System.out.print(o));
     }
 
-    private final List<Listener> listeners = new ArrayList<>();
-
-    public List<Listener> getATM() {
+    public List<ATM> getATM() {
         return department;
     }
 
+    public void removeATM(ATM atm) {
+        department.remove(atm);
+    }
+
+    @Override
+    public void event(Command command) {
+        System.out.println(command.execute(department));
+    }
 }

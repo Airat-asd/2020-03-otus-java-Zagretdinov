@@ -12,6 +12,6 @@ public class InitialDepartment extends DepartmentProcessor{
 
     @Override
     public String getProcessName() {
-        return "initialized.";
+        return "initialized";
     }
 }

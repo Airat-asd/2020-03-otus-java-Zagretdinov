@@ -22,7 +22,6 @@ public class CreateDepartment extends DepartmentProcessor {
 
     @Override
     public String getProcessName() {
-
-        return "created.";
+        return "created";
     }
 }

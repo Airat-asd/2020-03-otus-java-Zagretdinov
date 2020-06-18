@@ -8,7 +8,7 @@ public class Memento {
     private final State state;
 
     public Memento(State state) {
-        this.state = new State(state);
+        this.state = new State(state.getDepartment());
     }
 
     State getState() {

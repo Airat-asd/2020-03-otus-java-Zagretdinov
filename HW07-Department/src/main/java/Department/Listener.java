@@ -6,7 +6,5 @@ package Department;
  */
 public interface Listener {
 
-    void balanceCollection();
-
-    void initialATM();
+    void event(Command command);
 }

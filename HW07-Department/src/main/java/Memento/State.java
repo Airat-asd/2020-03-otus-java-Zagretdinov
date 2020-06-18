@@ -14,11 +14,7 @@ public class State {
     private Department department;
 
     public State(Department department) {
-        this.department = department;
-    }
-
-    public State(State state) {
-        this.department = new Department(state.getDepartment().getName(), state.getDepartment().getATM());
+        this.department = new Department(department);
     }
 
     public Department getDepartment() {

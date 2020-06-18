@@ -7,20 +7,30 @@ public class MainClassDepartment {
     public static void main(String[] args) {
         System.out.println("-----------------Chain of responsibility-------------------- ");
         Department ufaCityDepartment = new Department("Ufa");
-        DepartmentProcessor create = new CreateDepartment();
-        DepartmentProcessor initial = new InitialDepartment();
+        DepartmentProcessor createUfaCityDepartment = new CreateDepartment();
+        DepartmentProcessor initialUfaCityDepartment = new InitialDepartment();
 
-        create.setNext(initial);
-        create.process(ufaCityDepartment);
-        System.out.println("---------------------------");
+        createUfaCityDepartment.setNext(initialUfaCityDepartment);
+        createUfaCityDepartment.process(ufaCityDepartment);
+        System.out.println("Print ufaCityDepartment:");
         ufaCityDepartment.printDepartment();
 
-        System.out.println("-----------------Visitor-------------------- ");
-        DepartmentEvent departmentEvent = new DepartmentEvent();
-        departmentEvent.addListener(ufaCityDepartment.getATM());
-        departmentEvent.event();
-        departmentEvent.removeListener(ufaCityDepartment.getATM());
-        departmentEvent.event();
+        Department moscowDepartment = new Department("Moscow");
+        DepartmentProcessor createMoscowDepartment = new CreateDepartment();
+        DepartmentProcessor initialMoscowDepartment = new InitialDepartment();
+
+        createMoscowDepartment.setNext(initialMoscowDepartment);
+        createMoscowDepartment.process(moscowDepartment);
+        System.out.println("Print moscowDepartment:");
+        moscowDepartment.printDepartment();
+
+        System.out.println("-----------------Observer-------------------- ");
+        System.out.print("Balance ufaCityDepartment = ");
+        ufaCityDepartment.event(new CalculateTheBalance());
+        ufaCityDepartment.removeATM(ufaCityDepartment.getATM().get(0));
+        System.out.println("Removed ATM Kirovsky");
+        System.out.print("Balance ufaCityDepartment = ");
+        ufaCityDepartment.event(new CalculateTheBalance());
 
         System.out.println("-----------------Memento-------------------- ");
         Originator originator = new Originator();

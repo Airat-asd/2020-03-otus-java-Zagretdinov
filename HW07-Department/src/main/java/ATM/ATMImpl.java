@@ -12,7 +12,7 @@ import java.util.Random;
  * @author Ayrat Zagretdinov
  * created on 16.05.2020
  */
-public class ATMImpl implements ATM, Listener {
+public class ATMImpl implements ATM {
     private final int SERIAL_NUMBER = (new Random()).nextInt(1000);
     ;
     private String nameATM;
@@ -97,11 +97,5 @@ public class ATMImpl implements ATM, Listener {
     @Override
     public void initialATM() {
         init = true;
-    }
-
-    @Override
-    public void balanceCollection() {
-        balanceUpdate();
-        System.out.println("Balance ATM{" + nameATM + "} = "+balance);
     }
 }
