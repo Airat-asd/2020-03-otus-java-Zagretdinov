@@ -13,4 +13,5 @@ include 'HW02-DIYArrayList'
 include 'HW03-testFramework'
 include 'HW04-AOP'
 include 'HW05-ATM'
+include 'HW07-Department'
 
