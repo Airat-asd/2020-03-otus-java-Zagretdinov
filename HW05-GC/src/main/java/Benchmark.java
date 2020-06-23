@@ -9,7 +9,7 @@ public class Benchmark implements BenchmarkMBean {
         System.out.println("Start");
         for (int i = 0; i < NUMBNER_OF_CYCLE_REPEATS; i++) {
             for (int j = 0; j < AMOUNT; j++) {
-                list.add(new String(new char[10]));
+                list.add(new String(new char[300]));
             }
             for (int j = 0; j < (AMOUNT / 2); j++) {
                 list.remove(j);
