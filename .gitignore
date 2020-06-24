@@ -34,4 +34,6 @@ build
 
 #Gradle
 /.gradle/
+/.buildSrc/.gradle/
+/.buildSrc/build/
 
