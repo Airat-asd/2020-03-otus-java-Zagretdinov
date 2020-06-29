@@ -12,29 +12,38 @@ import java.util.Iterator;
 public class MyGson {
 
     public String toJson(Object obj) throws IllegalAccessException {
-        String json = "";
-        if (obj != null) {
-            if (!(obj.getClass().getPackageName().equals("java.lang"))) {
-                json = "{";
-                Field[] fieldsAll = obj.getClass().getDeclaredFields();
-                for (int i = 0; i < fieldsAll.length; i++) {
-                    fieldsAll[i].setAccessible(true);
-                    if (fieldsAll[i].get(obj) != null) {
-                        json = json + "\"" + fieldsAll[i].getName() + "\"" + ":";
-                        json = json + fieldIntoJson(fieldsAll[i], obj);
-                        if (i < fieldsAll.length - 1) {
-                            json = json + ",";
+        if ((obj instanceof Byte) || (obj instanceof Short) || (obj instanceof Integer) || (obj instanceof Short) ||
+                (obj instanceof Long) || (obj instanceof Float) || (obj instanceof Double) || (obj instanceof Boolean)) {
+            return obj.toString();
+        } else {
+            String json = "";
+            if (obj != null) {
+                if (!(obj.getClass().getPackageName().equals("java.lang") || obj.getClass().getPackageName().equals("java.util"))) {
+                    json = "{";
+                    Field[] fieldsAll = obj.getClass().getDeclaredFields();
+                    for (int i = 0; i < fieldsAll.length; i++) {
+                        fieldsAll[i].setAccessible(true);
+                        if (fieldsAll[i].get(obj) != null) {
+                            json = json + "\"" + fieldsAll[i].getName() + "\"" + ":";
+                            json = json + fieldIntoJson(fieldsAll[i], obj);
+                            if (i < fieldsAll.length - 1) {
+                                json = json + ",";
+                            }
                         }
                     }
+                    json = json + "}";
+                    return json;
+                } else if (obj.getClass().getPackageName().equals("java.util")) {
+                    json = json + obj;
+                    return json;
+
+                } else {
+                    json = json + "\"" + obj + "\"";
+                    return json;
                 }
-                json = json + "}";
-                return json;
             } else {
-                json = json + "\"" + obj + "\"";
-                return json;
+                return null;
             }
-        } else {
-            return null;
         }
     }
 
