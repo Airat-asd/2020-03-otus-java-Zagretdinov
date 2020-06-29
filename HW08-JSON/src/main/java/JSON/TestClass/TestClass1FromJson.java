@@ -1,15 +1,17 @@
+package JSON.TestClass;
+
 import java.util.Arrays;
-import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
-public class TestClassFromJson {
+public class TestClass1FromJson<T> {
     private final int value1;
     private final String value2;
-    private final Collection<Integer> value3;
-    private final int[] value4;
-    private StringBuilder value5=null;
+    private final List<T> value3;
+    private final String[] value4;
+    private StringBuilder value5 = null;
 
-    TestClassFromJson(int value1, String value2, Collection value3, int[] value4, StringBuilder value5) {
+    public TestClass1FromJson(int value1, String value2, List<T> value3, String[] value4, StringBuilder value5) {
         this.value1 = value1;
         this.value2 = value2;
         this.value3 = value3;
@@ -19,12 +21,12 @@ public class TestClassFromJson {
 
     @Override
     public String toString() {
-        return "TestClassFromJson{" +
+        return "TestClass1FromJson{" +
                 "value1=" + value1 +
                 ", value2='" + value2 + '\'' +
-                ", value4=" + value3 +
-                ", value3=" + Arrays.toString(value4) +
-                ", value2='" + value5.toString() + '\'' +
+                ", value3=" + value3 +
+                ", value4=" + Arrays.toString(value4) +
+                ", value5='" + value5.toString() + '\'' +
                 '}';
     }
 
@@ -32,7 +34,7 @@ public class TestClassFromJson {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        TestClassFromJson that = (TestClassFromJson) o;
+        TestClass1FromJson that = (TestClass1FromJson) o;
         return value1 == that.value1 &&
                 Objects.equals(value2, that.value2) &&
                 Objects.equals(value3.toString(), that.value3.toString()) &&
@@ -42,6 +44,6 @@ public class TestClassFromJson {
 
     @Override
     public int hashCode() {
-        return Objects.hash(value1, value2, value3, value4);
+        return Objects.hash(value1, value2, value3, value4, value5);
     }
 }
