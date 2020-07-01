@@ -1,30 +1,39 @@
-package JSON;
+package ru.otus.json;
 
-import JSON.MyJSON.MyGson;
-import JSON.TestClass.EmbeddedObjectClass;
-import JSON.TestClass.TestClass1FromJson;
-import JSON.TestClass.TestClass2FromJson;
 import com.google.gson.Gson;
+import ru.otus.json.myJson.MyGson;
+import ru.otus.json.testClass.EmbeddedObjectClass;
+import ru.otus.json.testClass.TestClass1FromJson;
+import ru.otus.json.testClass.TestClass2FromJson;
 
 import java.util.*;
 
 public class MainClassJSON {
-    public static void main(String[] args) throws IllegalAccessException {
+    public static void main(String[] args) throws IllegalAccessException  {
         Gson gson = new Gson();
         MyGson myGson = new MyGson();
+        //Готовим объекты
         TestClass1FromJson<Integer> obj = new TestClass1FromJson(22, "String", Arrays.asList(1.0, 2.0, 3.0),
                 new String[]{"arrayString1", "arrayString2", "arrayString3"}, new StringBuilder("StringBuilder"));
-        List<Integer> collection = new ArrayList<>();
-        collection.add(123);
-        collection.add(567);
-        collection.add(959);
-        TestClass2FromJson obj2 = new TestClass2FromJson(new Object[]{new EmbeddedObjectClass(new StringBuilder("EmbeddedString"))}, collection);
+        List<Double> collection = new ArrayList<>();
+        collection.add(123.0);
+        collection.add(567.0);
+        collection.add(959.0);
+        TestClass2FromJson<Double> obj2 = new TestClass2FromJson<>(new Object[]{new EmbeddedObjectClass
+                (new StringBuilder("EmbeddedString"))}, collection);
         TestClass2FromJson obj3 = null;
         Short obj4 = 2;
         String obj5 = "String";
         char obj6 = 'C';
         Collection<Double> obj7 = Collections.singletonList(13.0);
+        Collection<Double> obj8 = collection;
+        Double[] obj9 = {1.0, 2.0, 3.0, 4.0, 5.0};
+        List<List> matryoshka = new ArrayList<>();
+        matryoshka.add(Arrays.asList("matryoshka1", "matryoshka2"));
+        matryoshka.add(Arrays.asList("matryoshka11", "matryoshka22"));
+        TestClass2FromJson<List> obj10 = new TestClass2FromJson<>(null, matryoshka);
 
+        //Создаем и проверяем JSON
         String json = gson.toJson(obj);
         System.out.println("Create json =   " + json);
         String myJson = myGson.toJson(obj);
@@ -71,5 +80,26 @@ public class MainClassJSON {
         System.out.println("Create json7 = " + json7);
         Collection<Double> objFromMyJson7 = gson.fromJson(myJson7, Collection.class);
         System.out.println("Equals7 = " + (obj7.equals(objFromMyJson7)));
+
+        String myJson8 = myGson.toJson(obj8);
+        System.out.println("Create myJson8 = " + myJson8);
+        String json8 = gson.toJson(obj8);
+        System.out.println("Create Json8 = " + json8);
+        Collection objFromMyJson8 = gson.fromJson(myJson8, Collection.class);
+        System.out.println("Equals8 = " + obj8.equals(objFromMyJson8));
+
+        String myJson9 = myGson.toJson(obj9);
+        System.out.println("Create myJson9 = " + myJson9);
+        String json9 = gson.toJson(obj9);
+        System.out.println("Create Json9 = " + json9);
+        Double[] objFromMyJson9 = gson.fromJson(myJson9, Double[].class);
+        System.out.println("Equals9 = " + Arrays.toString(obj9).equals(Arrays.toString(objFromMyJson9)));
+
+        String json10 = gson.toJson(obj10);
+        System.out.println("Create json10 =   " + json10);
+        String myJson10 = myGson.toJson(obj10);
+        System.out.println("Create myJson10 = " + myJson10);
+        TestClass2FromJson<List> objFromMyJson10 = gson.fromJson(myJson10, TestClass2FromJson.class);
+        System.out.println("Equals10 = " + obj10.equals(objFromMyJson10));
     }
 }

@@ -8,5 +8,5 @@ public interface Versions {
     String jaxbApi = "2.3.1";
     String testcontainers = "1.13.0";
     String postgresql = "42.2.5";
-    String Json = "2.8.6";
+    String json = "2.8.6";
 }

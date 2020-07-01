@@ -1,4 +1,4 @@
-package JSON.TestClass;
+package ru.otus.json.testClass;
 
 /**
  * @author Ayrat Zagretdinov

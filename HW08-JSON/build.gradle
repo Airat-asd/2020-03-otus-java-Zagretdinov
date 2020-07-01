@@ -12,6 +12,7 @@ dependencies {
     implementation 'javax.json:javax.json-api'
     implementation 'org.glassfish:javax.json'
     implementation 'com.google.code.gson:gson'
+    compile project(':HW02-DIYArrayList')
 }
 
 test {
@@ -28,11 +29,11 @@ tasks.withType(JavaCompile) {
 }
 
 shadowJar {
-    archiveBaseName.set('JSON')
+    archiveBaseName.set('HW08-JSON')
     archiveVersion.set('0.1')
     archiveClassifier.set('')
     manifest {
-        attributes 'Main-Class': 'MainClassJSON'
+        attributes 'Main-Class': 'ru.otus.json.MainClassJSON'
     }
 }
 

@@ -40,7 +40,7 @@ allprojects {
             dependency("org.postgresql:postgresql:${Versions.postgresql}")
             dependency("org.testcontainers:junit-jupiter:${Versions.testcontainers}")
             dependency("org.testcontainers:postgresql:${Versions.testcontainers}")
-            dependency("com.google.code.gson:gson:${Versions.Json}")
+            dependency("com.google.code.gson:gson:${Versions.json}")
         }
     }
 
