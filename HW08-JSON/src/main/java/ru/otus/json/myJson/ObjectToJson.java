@@ -9,11 +9,7 @@ import java.util.Collection;
 public class ObjectToJson {
 
     public static String objectToJson(Object obj) throws IllegalAccessException {
-        String variable = primitiveType(obj) + stringType(obj) + arrayType(obj) + collectionType(obj);
-        if (variable.equals("")) {
-            variable = ReferenceTypeInJson.referenceTypeInJson(obj);
-        }
-        return variable;
+        return primitiveType(obj) + stringType(obj) + arrayType(obj) + collectionType(obj) + referenceType(obj);
     }
 
     private static String primitiveType(Object obj) {
