@@ -9,6 +9,6 @@ public class MyGson {
         if (obj == null) {
             return null;
         }
-        return DefiningTypeVariable.definingTypeVariable(obj);
+        return ObjectToJson.objectToJson(obj);
     }
 }

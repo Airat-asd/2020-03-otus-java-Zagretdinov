@@ -19,7 +19,7 @@ public class ArrayTypeInJson {
             if (Array.get(obj, i) == null) {
                 json = json + "null";
             } else {
-                json = json + DefiningTypeVariable.definingTypeVariable(Array.get(obj, i));
+                json = json + ObjectToJson.objectToJson(Array.get(obj, i));
             }
             if (i < arrayLength - 1) {
                 json = json + ",";

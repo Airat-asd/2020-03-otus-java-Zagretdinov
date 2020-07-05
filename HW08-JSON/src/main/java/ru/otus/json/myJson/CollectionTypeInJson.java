@@ -18,7 +18,7 @@ public class CollectionTypeInJson {
         Iterator iterator = ((Collection) obj).iterator();
         while (iterator.hasNext()) {
             var element = iterator.next();
-            json = json + DefiningTypeVariable.definingTypeVariable(element);
+            json = json + ObjectToJson.objectToJson(element);
             if (iterator.hasNext()) {
                 json = json + ",";
             }

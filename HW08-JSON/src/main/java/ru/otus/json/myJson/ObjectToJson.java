@@ -6,11 +6,10 @@ import java.util.Collection;
  * @author Ayrat Zagretdinov
  * created on 02.07.2020
  */
-public class DefiningTypeVariable {
+public class ObjectToJson {
 
-    public static String definingTypeVariable(Object obj) throws IllegalAccessException {
-        String variable;
-        variable = primitiveType(obj) + stringType(obj) + arrayType(obj) + collectionType(obj);
+    public static String objectToJson(Object obj) throws IllegalAccessException {
+        String variable = primitiveType(obj) + stringType(obj) + arrayType(obj) + collectionType(obj);
         if (variable.equals("")) {
             variable = ReferenceTypeInJson.referenceTypeInJson(obj);
         }
@@ -41,6 +40,13 @@ public class DefiningTypeVariable {
     private static String collectionType(Object obj) throws IllegalAccessException {
         if (obj instanceof Collection) {
             return CollectionTypeInJson.CollectionTypeInJson(obj);
+        }
+        return "";
+    }
+
+    private static String referenceType(Object obj) throws IllegalAccessException {
+        if (ReferenceTypeInJson.isReferenceType(obj)) {
+            return ReferenceTypeInJson.referenceTypeInJson(obj);
         }
         return "";
     }

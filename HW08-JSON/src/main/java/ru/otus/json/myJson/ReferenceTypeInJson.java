@@ -1,14 +1,16 @@
 package ru.otus.json.myJson;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 
 /**
  * @author Ayrat Zagretdinov
  * created on 30.06.2020
  */
 public class ReferenceTypeInJson {
-    private final static int TRANSIENT_ID = 127;
-    private final static int CONSTANT_ID = 26;
+    public static boolean isReferenceType(Object obj) {
+        return (obj.getClass().getClassLoader() != null);
+    }
 
     public static String referenceTypeInJson(Object obj) throws IllegalAccessException {
         String json = "{";
@@ -17,10 +19,10 @@ public class ReferenceTypeInJson {
         int positionBuffer = 0;
         for (int i = 0; i < fieldsAll.length; i++) {
             fieldsAll[i].setAccessible(true);
-            if ((fieldsAll[i].get(obj) != null) & (fieldsAll[i].getModifiers() < TRANSIENT_ID) &
-                    (fieldsAll[i].getModifiers() != CONSTANT_ID)) {
+            if ((fieldsAll[i].get(obj) != null) & !(Modifier.isTransient(fieldsAll[i].getModifiers())) &
+                    !(Modifier.isFinal(fieldsAll[i].getModifiers()) && Modifier.isStatic(fieldsAll[i].getModifiers()))) {
                 buffer[positionBuffer] = "\"" + fieldsAll[i].getName() + "\"" + ":" +
-                        DefiningTypeVariable.definingTypeVariable(fieldsAll[i].get(obj));
+                        ObjectToJson.objectToJson(fieldsAll[i].get(obj));
                 positionBuffer++;
             }
         }
