@@ -7,7 +7,7 @@
  * in the user manual at https://docs.gradle.org/6.3/userguide/multi_project_builds.html
  */
 
-rootProject.name = 'OTUS'
+rootProject.name = 'otusJava'
 include 'HW01-gradle'
 include 'HW02-DIYArrayList'
 include 'HW03-testFramework'
@@ -15,5 +15,5 @@ include 'HW04-AOP'
 include 'HW05-GC'
 include 'HW06-ATM'
 include 'HW07-Department'
-include 'HW05-GC'
+include 'HW08-JSON'
 
