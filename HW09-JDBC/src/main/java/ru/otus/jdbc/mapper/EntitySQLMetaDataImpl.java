@@ -1,7 +1,6 @@
 package ru.otus.jdbc.mapper;
 
 import java.lang.reflect.Field;
-import java.sql.SQLException;
 import java.util.Iterator;
 
 public class EntitySQLMetaDataImpl implements EntitySQLMetaData {

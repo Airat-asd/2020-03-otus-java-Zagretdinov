@@ -20,8 +20,8 @@ public class DbExecutorImpl<T> implements DbExecutor<T> {
         Savepoint savePoint = null;
         try {
             savePoint = connection.setSavepoint("savePointName");
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
         }
 
         try (PreparedStatement pst = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -36,14 +36,14 @@ public class DbExecutorImpl<T> implements DbExecutor<T> {
         } catch (SQLException ex) {
             try {
                 connection.rollback(savePoint);
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
+            } catch (SQLException throwable) {
+                throwable.printStackTrace();
             }
             logger.error(ex.getMessage(), ex);
             try {
                 throw ex;
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
+            } catch (SQLException throwable) {
+                throwable.printStackTrace();
             }
         }
         return 0;
@@ -56,8 +56,8 @@ public class DbExecutorImpl<T> implements DbExecutor<T> {
             try (var rs = pst.executeQuery()) {
                 return Optional.ofNullable(rsHandler.apply(rs));
             }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
         }
         return Optional.empty();
     }

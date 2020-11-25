@@ -1,5 +1,9 @@
 package ru.otus.jdbc.mapper;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import ru.otus.core.annotations.Id;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.sql.Connection;
@@ -10,14 +14,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import ru.otus.core.annotations.*;
-
 public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
     private static final Logger logger = LoggerFactory.getLogger(EntityClassMetaDataImpl.class);
-
-    private final Class<T> clazz;
+    private Class<T> clazz;
     private String name;
     private Field[] fields;
     private Field idField;
@@ -59,13 +58,13 @@ public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
         if (fields == null) {
             reflectionFields();
         }
-        return new ArrayList<Field>(Arrays.asList(fields));
+        return new ArrayList<>(Arrays.asList(fields));
     }
 
     @Override
     public List<Field> getFieldsWithoutId() {
-        List<Field> getFieldsWithoutId = getFieldsWithoutId = getAllFields();
-        getFieldsWithoutId.remove(getIdField()); // не удалилось поле id
+        List<Field> getFieldsWithoutId = new ArrayList<>(getAllFields());
+        getFieldsWithoutId.remove(getIdField());
         return getFieldsWithoutId;
     }
 
@@ -75,22 +74,23 @@ public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
 
     private void reflectionFields() {
         fields = clazz.getDeclaredFields();
-        columns = getColumns();
-        Field fieldBuffer;
-        for (int columnNumber = 0; columnNumber < columns.size(); columnNumber++) {
-            for (int fieldNumber = 0; fieldNumber < fields.length; fieldNumber++) {
-                if (fields[fieldNumber].getName().toUpperCase().equals(columns.get(columnNumber))) {
-                    fieldBuffer = fields[columnNumber];
-                    fields[columnNumber] = fields[fieldNumber];
-                    fields[fieldNumber] = fieldBuffer;
-                }
-            }
-        }
+//        columns = getColumns();
+//        Field fieldBuffer;
+//        for (int columnNumber = 0; columnNumber < columns.size(); columnNumber++) {
+//            for (int fieldNumber = 0; fieldNumber < fields.length; fieldNumber++) {
+//                if (fields[fieldNumber].getName().toUpperCase().equals(columns.get(columnNumber))) {
+//                    fieldBuffer = fields[columnNumber];
+//                    fields[columnNumber] = fields[fieldNumber];
+//                    fields[fieldNumber] = fieldBuffer;
+//                }
+//            }
+//        }
+
     }
 
     private void reflectionConstructor() {
         try {
-            constructor = clazz.getConstructor(int.class, String.class, int.class);
+            constructor =  clazz.getConstructor(int.class, String.class, int.class);
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
         }

@@ -1,5 +1,4 @@
 package ru.otus.jdbc.dao;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -17,8 +16,8 @@ import static org.mockito.Mockito.*;
  * @version 1.0 date 23.11.2020
  **/
 
-class UserDaoJdbcTest {
-    UserDaoJdbc<User> daoJdbc;
+class ObjectDaoJdbcTest {
+    ObjectDaoJdbc<User> daoJdbc;
     SessionManagerJdbc sessionManager;
     DbExecutor<User> dbExecutor;
     DataSourceH2 dataSource;
@@ -36,7 +35,7 @@ class UserDaoJdbcTest {
         jdbcMapper = mock(JdbcMapperImpl.class);
         SessionManagerJdbc sessionManager = new SessionManagerJdbc(dataSource);
 
-        daoJdbc = new UserDaoJdbc(sessionManager, dbExecutor, jdbcMapper, clazz);
+        daoJdbc = new ObjectDaoJdbc(jdbcMapper, clazz);
     }
 
     @Test
@@ -48,7 +47,7 @@ class UserDaoJdbcTest {
         Mockito.doNothing().when(jdbcMapper).insert(user);
         Mockito.when(jdbcMapper.getId()).thenReturn(EXPECTED_ID);
 
-        int actualId = daoJdbc.insertUser(user);
+        int actualId = daoJdbc.insertObject(user);
 
 //        Assertions.assertEquals(EXPECTED_ID, actualId);
 

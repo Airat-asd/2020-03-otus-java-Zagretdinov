@@ -1,9 +1,9 @@
 package ru.otus.jdbc.mapper;
 
-import java.sql.SQLException;
+import ru.otus.core.sessionmanager.SessionManager;
 
 public interface JdbcMapper<T> {
-    <T> void insert(T objectData) throws NoSuchMethodException, SQLException, IllegalAccessException;
+    void insert(T objectData);
 
     void update(T objectData);
 
@@ -12,4 +12,6 @@ public interface JdbcMapper<T> {
     T findById(int id, Class<T> clazz);
 
     int getId();
-}
+    SessionManager getSessionManager();
+
+    }

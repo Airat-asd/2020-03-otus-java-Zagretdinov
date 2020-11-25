@@ -1,7 +1,5 @@
 package ru.otus.jdbc.mapper;
 
-import java.sql.SQLException;
-
 public interface EntitySQLMetaData {
     String getSelectAllSql();
 
