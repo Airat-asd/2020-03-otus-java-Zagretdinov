@@ -16,14 +16,8 @@ public class DbExecutorImpl<T> implements DbExecutor<T> {
     private static final Logger logger = LoggerFactory.getLogger(DbExecutorImpl.class);
 
     @Override
-    public int executeInsert(Connection connection, String sql, List<Object> params) {
-        Savepoint savePoint = null;
-        try {
-            savePoint = connection.setSavepoint("savePointName");
-        } catch (SQLException throwable) {
-            throwable.printStackTrace();
-        }
-
+    public int executeInsert(Connection connection, String sql, List<Object> params) throws SQLException {
+        Savepoint savePoint = connection.setSavepoint("savePointName");
         try (PreparedStatement pst = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             for (int idx = 0; idx < params.size(); idx++) {
                 pst.setObject(idx + 1, params.get(idx));
@@ -34,31 +28,20 @@ public class DbExecutorImpl<T> implements DbExecutor<T> {
                 return rs.getInt(1);
             }
         } catch (SQLException ex) {
-            try {
-                connection.rollback(savePoint);
-            } catch (SQLException throwable) {
-                throwable.printStackTrace();
-            }
+            connection.rollback(savePoint);
             logger.error(ex.getMessage(), ex);
-            try {
-                throw ex;
-            } catch (SQLException throwable) {
-                throwable.printStackTrace();
-            }
+            throw ex;
         }
-        return 0;
     }
 
     @Override
-    public Optional<T> executeSelect(Connection connection, String sql, int id, Function<ResultSet, T> rsHandler) {
+    public Optional<T> executeSelect(Connection connection, String sql, int id, Function<ResultSet, T> rsHandler)
+            throws SQLException {
         try (var pst = connection.prepareStatement(sql)) {
             pst.setInt(1, id);
             try (var rs = pst.executeQuery()) {
                 return Optional.ofNullable(rsHandler.apply(rs));
             }
-        } catch (SQLException throwable) {
-            throwable.printStackTrace();
         }
-        return Optional.empty();
     }
 }

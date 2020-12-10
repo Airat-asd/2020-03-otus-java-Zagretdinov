@@ -30,10 +30,6 @@ public class JdbcMapperImpl<T> implements JdbcMapper<T> {
         this.dbExecutor = dbExecutor;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
     @Override
     public void insert(T objectData) {
         object = objectData;
@@ -47,8 +43,12 @@ public class JdbcMapperImpl<T> implements JdbcMapper<T> {
                 e.printStackTrace();
             }
         });
-        id = dbExecutor.executeInsert(getConnection(), entitySQLMetaData.getInsertSql(),
-                params);
+        try {
+            id = dbExecutor.executeInsert(getConnection(), entitySQLMetaData.getInsertSql(),
+                    params);
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
     }
 
     @Override
@@ -78,7 +78,7 @@ public class JdbcMapperImpl<T> implements JdbcMapper<T> {
             return returnObject.orElse(initializationObject(entityClassMetaData, 0, "0", 0));
 
         } catch (Exception e) {
-//            logger.error(e.getMessage(), e);
+            logger.error(e.getMessage(), e);
         }
         return null;
     }

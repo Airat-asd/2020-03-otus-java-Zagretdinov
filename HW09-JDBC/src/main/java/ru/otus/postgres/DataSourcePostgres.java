@@ -1,4 +1,4 @@
-package ru.otus.h2;
+package ru.otus.postgres;
 
 import javax.sql.DataSource;
 import java.io.PrintWriter;
@@ -11,12 +11,14 @@ import java.util.logging.Logger;
  * @author sergey
  * created on 03.02.19.
  */
-public class DataSourceH2 implements DataSource {
-    private static final String URL = "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1";
+public class DataSourcePostgres implements DataSource {
+    private static final String URL = "jdbc:postgresql://localhost:5432/demoDB";
+    private static final String USER = "usr";
+    private static final String PASSWORD = "pwd";
 
     @Override
     public Connection getConnection() throws SQLException {
-        Connection connection = DriverManager.getConnection(URL);
+        Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
         connection.setAutoCommit(false);
         return connection;
     }

@@ -9,7 +9,7 @@ import java.util.function.Function;
 
 public interface  DbExecutor<T> {
 
-    int executeInsert(Connection connection, String sql, List<Object> params);
+    int executeInsert(Connection connection, String sql, List<Object> params) throws SQLException;
 
-    Optional<T> executeSelect(Connection connection, String sql, int id, Function<ResultSet, T> rsHandler);
+    Optional<T> executeSelect(Connection connection, String sql, int id, Function<ResultSet, T> rsHandler) throws SQLException;
 }

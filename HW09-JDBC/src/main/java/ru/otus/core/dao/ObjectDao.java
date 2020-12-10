@@ -10,10 +10,8 @@ public interface ObjectDao<T> {
 
     Optional<T> findById(int id);
 
-
-
-    //void updateUser(User user);
-    //void insertOrUpdate(User user);
+    //void updateUser(Client object);
+    //void insertOrUpdate(Client object);
 
     SessionManager getSessionManager();
 }

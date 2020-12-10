@@ -12,6 +12,6 @@ public interface JdbcMapper<T> {
     T findById(int id, Class<T> clazz);
 
     int getId();
-    SessionManager getSessionManager();
 
+    SessionManager getSessionManager();
     }
