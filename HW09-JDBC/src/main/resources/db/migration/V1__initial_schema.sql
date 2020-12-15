@@ -1,15 +1,15 @@
-create table client
+create table Client
 (
-    id   integer not null primary key,
+    id serial not null unique primary key,
     name varchar(50),
     age integer
 
 );
 
-create table account
+create table Account
 (
-    no   varchar(20) not null primary key,
+    no varchar(20) not null unique primary key,
     type varchar(50),
-    rest double
+    rest float
 
 );
