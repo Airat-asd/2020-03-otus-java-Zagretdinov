@@ -8,6 +8,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
@@ -61,7 +62,8 @@ public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
             getFieldsWithoutId = new ArrayList<>(getAllFields());
             getFieldsWithoutId.remove(getIdField());
         }
-        return getFieldsWithoutId;
+
+        return Collections.unmodifiableList(getFieldsWithoutId);
     }
 
     private void reflectionName() {

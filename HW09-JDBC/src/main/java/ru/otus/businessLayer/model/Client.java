@@ -30,7 +30,6 @@ public class Client {
         return age;
     }
 
-
     @Override
     public String toString() {
         return "Client{" +

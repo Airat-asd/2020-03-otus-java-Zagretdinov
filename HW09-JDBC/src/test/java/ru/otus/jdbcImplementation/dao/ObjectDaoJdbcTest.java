@@ -9,7 +9,6 @@ import ru.otus.daoLayer.core.dao.ObjectDaoJdbc;
 import ru.otus.daoLayer.mapper.JdbcMapperImpl;
 import ru.otus.daoLayer.postgres.DataSourcePostgres;
 import ru.otus.jdbcImplementation.DbExecutor;
-import ru.otus.jdbcImplementation.sessionmanager.SessionManagerJdbc;
 
 import java.util.Optional;
 
@@ -22,7 +21,6 @@ import static org.mockito.Mockito.mock;
 
 class ObjectDaoJdbcTest {
     ObjectDaoJdbc<Client> daoJdbc;
-    SessionManagerJdbc sessionManager;
     DbExecutor<Client> dbExecutor;
     DataSourcePostgres dataSource;
     Client client;
@@ -33,14 +31,13 @@ class ObjectDaoJdbcTest {
     private final static Object EXPECTED_ID = 1;
     private final static Client EXPECTED_CLIENT = new Client(1, "test", 10);
     private final static Optional<Client> EXPECTED_OPTIONAL = Optional.of(EXPECTED_CLIENT);
+
     @BeforeEach
     void setUp() {
         dataSource = mock(DataSourcePostgres.class);
-        sessionManager = mock(SessionManagerJdbc.class);
         dbExecutor = mock(DbExecutor.class);
         client = mock(Client.class);
         jdbcMapper = mock(JdbcMapperImpl.class);
-        SessionManagerJdbc sessionManager = new SessionManagerJdbc(dataSource);
         daoJdbc = new ObjectDaoJdbc(jdbcMapper, clazz);
     }
 
@@ -63,7 +60,4 @@ class ObjectDaoJdbcTest {
         Assertions.assertEquals(EXPECTED_ID, actualId);
     }
 
-    @Test
-    void getSessionManager() {
-    }
 }

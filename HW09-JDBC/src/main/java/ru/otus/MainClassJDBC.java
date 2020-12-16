@@ -35,11 +35,32 @@ public class MainClassJDBC {
         ObjectDao<Client> clientDao = new ObjectDaoJdbc<>(jdbcMapper, Client.class);
 
         DBService<Client> dbServiceClient = new DBServiceImpl<>(clientDao);
-        id = dbServiceClient.saveObject(new Client(14, "dbServiceClient14", 55), false);
+        id = dbServiceClient.saveObject(new Client(14, "dbServiceClient14", 55), true);
 
         System.out.println("----------------------------------------------");
 
         Optional<Client> clientOptional = dbServiceClient.getObject(id);
+        clientOptional.ifPresentOrElse(
+                client -> logger.info("created client, name:{}", client.getName()),
+                () -> logger.info("client was not created")
+        );
+        System.out.println("----------------------------------------------");
+
+        id = dbServiceClient.saveObject(new Client(14, "dbServiceClient14New", 5), false);
+        System.out.println("----------------------------------------------");
+
+        clientOptional = dbServiceClient.getObject(id);
+        clientOptional.ifPresentOrElse(
+                client -> logger.info("created client, name:{}", client.getName()),
+                () -> logger.info("client was not created")
+        );
+
+        System.out.println("----------------------------------------------");
+
+        id = dbServiceClient.saveObject(new Client(0, "dbServiceClient0", 0));
+        System.out.println("----------------------------------------------");
+
+        clientOptional = dbServiceClient.getObject(id);
         clientOptional.ifPresentOrElse(
                 client -> logger.info("created client, name:{}", client.getName()),
                 () -> logger.info("client was not created")

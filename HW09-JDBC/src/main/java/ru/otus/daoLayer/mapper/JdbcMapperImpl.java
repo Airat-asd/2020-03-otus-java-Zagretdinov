@@ -8,9 +8,9 @@ import ru.otus.jdbcImplementation.sessionmanager.SessionManagerJdbc;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class JdbcMapperImpl<T> implements JdbcMapper<T> {
@@ -18,7 +18,6 @@ public class JdbcMapperImpl<T> implements JdbcMapper<T> {
 
     private EntityClassMetaData<T> entityClassMetaData;
     private EntitySQLMetaData entitySQLMetaData;
-    private final List<Object> params = new ArrayList<>();
     private final SessionManagerJdbc sessionManager;
     private final DbExecutor<T> dbExecutor;
     private Object id;
@@ -31,8 +30,8 @@ public class JdbcMapperImpl<T> implements JdbcMapper<T> {
 
     @Override
     public void insert(T objectData, boolean flagOfInsert) throws IllegalAccessException {
+        List<Object> params = new ArrayList<>(createParameters(objectData));
         this.object = objectData;
-        createParameters(objectData);
         var id = entityClassMetaData.getIdField().get(objectData);
         if (id == null || id.equals(0)) {
             params.remove(0);
@@ -45,8 +44,6 @@ public class JdbcMapperImpl<T> implements JdbcMapper<T> {
             if (flagOfInsert) {
                 insertOrUpdate(objectData);
             } else {
-                params.add(params.get(0));
-                params.remove(0);
                 try {
                     update(objectData);
                 } catch (SQLException troubles) {
@@ -64,9 +61,8 @@ public class JdbcMapperImpl<T> implements JdbcMapper<T> {
 
     @Override
     public void insertOrUpdate(T objectData) {
+        List<Object> params = new ArrayList<>(createParameters(objectData));
         try {
-            params.clear();
-            createParameters(objectData);
             executor(entitySQLMetaData.getInsertSql(), params);
         } catch (SQLException troubles) {
             troubles.printStackTrace();
@@ -75,6 +71,9 @@ public class JdbcMapperImpl<T> implements JdbcMapper<T> {
 
     @Override
     public void update(T objectData) throws SQLException {
+        List<Object> params = new ArrayList<>(createParameters(objectData));
+        params.add(params.get(0));
+        params.remove(0);
         executor(entitySQLMetaData.getUpdateSql(), params);
     }
 
@@ -85,7 +84,7 @@ public class JdbcMapperImpl<T> implements JdbcMapper<T> {
             entitySQLMetaData = new EntitySQLMetaDataImpl(entityClassMetaData);
         }
         try {
-            return dbExecutor.executeSelect(getConnection(), entitySQLMetaData.getSelectByIdSql(),
+            return dbExecutor.executeSelect(sessionManager.getCurrentSession().getConnection(), entitySQLMetaData.getSelectByIdSql(),
                     id,
                     rs -> {
                         try {
@@ -108,7 +107,8 @@ public class JdbcMapperImpl<T> implements JdbcMapper<T> {
         return null;
     }
 
-    private void createParameters(T objectData) {
+    private List<Object> createParameters(T objectData) {
+        List<Object> params = new ArrayList<>();
         entityClassMetaData = new EntityClassMetaDataImpl<>((Class<T>) objectData.getClass());
         entitySQLMetaData = new EntitySQLMetaDataImpl(entityClassMetaData);
         entityClassMetaData.getIdField().setAccessible(true);
@@ -126,14 +126,12 @@ public class JdbcMapperImpl<T> implements JdbcMapper<T> {
                 e.printStackTrace();
             }
         });
+        return Collections.unmodifiableList(params);
     }
 
+    @Override
     public SessionManager getSessionManager() {
         return sessionManager;
-    }
-
-    private Connection getConnection() {
-        return sessionManager.getCurrentSession().getConnection();
     }
 
     @Override
@@ -152,7 +150,7 @@ public class JdbcMapperImpl<T> implements JdbcMapper<T> {
         return object;
     }
 
-    private void executor(String insertSQL, List<Object> params) throws SQLException {
-        id = dbExecutor.executeInsert(getConnection(), insertSQL, params);
+    void executor(String insertSQL, List<Object> params) throws SQLException {
+        id = dbExecutor.executeInsert(sessionManager.getCurrentSession().getConnection(), insertSQL, params);
     }
 }
