@@ -36,11 +36,10 @@ public class MainClassJDBC {
 
         DBService<Client> dbServiceClient = new DBServiceImpl<>(clientDao);
         id = dbServiceClient.saveObject(new Client(14, "dbServiceClient14", 55), false);
-        id = dbServiceClient.saveObject(new Client(24, "dbServiceClient24", 25), true);
 
         System.out.println("----------------------------------------------");
 
-        Optional<Client> clientOptional = dbServiceClient.getObject(140);
+        Optional<Client> clientOptional = dbServiceClient.getObject(id);
         clientOptional.ifPresentOrElse(
                 client -> logger.info("created client, name:{}", client.getName()),
                 () -> logger.info("client was not created")
@@ -62,10 +61,6 @@ public class MainClassJDBC {
         );
 
         System.out.println("-------------------------------------------");
-
-
-// Работа со счетом
-
     }
 
     private static void flywayMigrations(DataSource dataSource) {

@@ -1,19 +1,23 @@
 package ru.otus.jdbcImplementation.dao;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import ru.otus.businessLayer.model.Client;
 import ru.otus.daoLayer.core.dao.ObjectDaoJdbc;
-import ru.otus.jdbcImplementation.DbExecutor;
 import ru.otus.daoLayer.mapper.JdbcMapperImpl;
-import ru.otus.jdbcImplementation.sessionmanager.SessionManagerJdbc;
 import ru.otus.daoLayer.postgres.DataSourcePostgres;
+import ru.otus.jdbcImplementation.DbExecutor;
+import ru.otus.jdbcImplementation.sessionmanager.SessionManagerJdbc;
+
+import java.util.Optional;
 
 import static org.mockito.Mockito.mock;
 
 /**
  * @author Zagretdinov Airat
- * @version 1.0 date 23.11.2020
+ * @version 1.0 date 15.12.2020
  **/
 
 class ObjectDaoJdbcTest {
@@ -21,11 +25,14 @@ class ObjectDaoJdbcTest {
     SessionManagerJdbc sessionManager;
     DbExecutor<Client> dbExecutor;
     DataSourcePostgres dataSource;
-    Class<Client> clazz;
     Client client;
-    JdbcMapperImpl jdbcMapper;
-    private final static int EXPECTED_ID= 1;
+    JdbcMapperImpl<Client> jdbcMapper;
 
+    private final static Class<Client> clazz = Client.class;
+    private final static boolean flagOfInsert = true;
+    private final static Object EXPECTED_ID = 1;
+    private final static Client EXPECTED_CLIENT = new Client(1, "test", 10);
+    private final static Optional<Client> EXPECTED_OPTIONAL = Optional.of(EXPECTED_CLIENT);
     @BeforeEach
     void setUp() {
         dataSource = mock(DataSourcePostgres.class);
@@ -34,24 +41,26 @@ class ObjectDaoJdbcTest {
         client = mock(Client.class);
         jdbcMapper = mock(JdbcMapperImpl.class);
         SessionManagerJdbc sessionManager = new SessionManagerJdbc(dataSource);
-
         daoJdbc = new ObjectDaoJdbc(jdbcMapper, clazz);
     }
 
     @Test
     void findById() {
+        Mockito.doReturn(EXPECTED_CLIENT).when(jdbcMapper).findById(EXPECTED_ID,clazz);
+        var actualFindByIdReturn = daoJdbc.findById(EXPECTED_ID);
+        Assertions.assertEquals(EXPECTED_OPTIONAL, actualFindByIdReturn);
     }
 
     @Test
     void insertUser() {
-        Mockito.doNothing().when(jdbcMapper).insert(client);
+        try {
+            Mockito.doNothing().when(jdbcMapper).insert(client, flagOfInsert);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
         Mockito.when(jdbcMapper.getId()).thenReturn(EXPECTED_ID);
-
-        int actualId = daoJdbc.insertObject(client);
-
-//        Assertions.assertEquals(EXPECTED_ID, actualId);
-
-
+        var actualId = daoJdbc.insertObject(client, flagOfInsert);
+        Assertions.assertEquals(EXPECTED_ID, actualId);
     }
 
     @Test

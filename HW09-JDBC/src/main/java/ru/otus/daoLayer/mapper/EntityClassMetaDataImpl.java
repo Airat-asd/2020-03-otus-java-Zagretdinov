@@ -73,7 +73,7 @@ public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
     }
 
     private void reflectionConstructor() {
-            Constructor<?>[] constructors = clazz.getDeclaredConstructors();
+            Constructor<?>[] constructors = clazz.getDeclaredConstructors(); //для упрощения, предполагаю что у класса только один конструктор
             constructor = (Constructor<T>) constructors[0];
     }
 
