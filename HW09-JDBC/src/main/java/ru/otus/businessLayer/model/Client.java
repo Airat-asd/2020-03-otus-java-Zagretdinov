@@ -8,17 +8,17 @@ import ru.otus.daoLayer.core.annotations.*;
  */
 public class Client {
     @Id
-    private final int id;
+    private final long id;
     private final String name;
     private final int age;
 
-    public Client(int id, String name, int age) {
+    public Client(long id, String name, int age) {
         this.id = id;
         this.name = name;
         this.age = age;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 

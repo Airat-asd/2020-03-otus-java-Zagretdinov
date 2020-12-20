@@ -5,10 +5,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.otus.businessLayer.model.Account;
 import ru.otus.businessLayer.model.Client;
-import ru.otus.businessLayer.service.DBService;
-import ru.otus.businessLayer.service.DBServiceImpl;
-import ru.otus.daoLayer.core.dao.ObjectDao;
-import ru.otus.daoLayer.core.dao.ObjectDaoJdbc;
+import ru.otus.businessLayer.service.DBServiceAccount;
+import ru.otus.businessLayer.service.DBServiceAccountImpl;
+import ru.otus.businessLayer.service.DBServiceClient;
+import ru.otus.businessLayer.service.DBServiceClientImpl;
+import ru.otus.daoLayer.core.dao.AccountDao;
+import ru.otus.daoLayer.core.dao.AccountDaoJdbc;
+import ru.otus.daoLayer.core.dao.ClientDao;
+import ru.otus.daoLayer.core.dao.ClientDaoJdbc;
 import ru.otus.daoLayer.mapper.JdbcMapper;
 import ru.otus.daoLayer.mapper.JdbcMapperImpl;
 import ru.otus.daoLayer.postgres.DataSourcePostgres;
@@ -23,7 +27,6 @@ public class MainClassJDBC {
     private static final Logger logger = LoggerFactory.getLogger(MainClassJDBC.class);
 
     public static void main(String[] args) {
-        Object id;
 // Общая часть
         DataSource dataSource = new DataSourcePostgres();
         flywayMigrations(dataSource);
@@ -31,53 +34,45 @@ public class MainClassJDBC {
 
 //Работа спользователем
         DbExecutor<Client> dbExecutor = new DbExecutorImpl<>();
-        JdbcMapper<Client> jdbcMapper = new JdbcMapperImpl<>(sessionManager, dbExecutor);
-        ObjectDao<Client> clientDao = new ObjectDaoJdbc<>(jdbcMapper, Client.class);
+        JdbcMapper<Client> jdbcMapperClient = new JdbcMapperImpl<>(dbExecutor);
+        ClientDao clientDao = new ClientDaoJdbc(sessionManager, jdbcMapperClient);
 
-        DBService<Client> dbServiceClient = new DBServiceImpl<>(clientDao);
-        id = dbServiceClient.saveObject(new Client(14, "dbServiceClient14", 55), true);
-
+        DBServiceClient dbServiceClient = new DBServiceClientImpl(clientDao);
+        long idClient = dbServiceClient.saveClient(new Client(14, "dbServiceClient14", 55));
         System.out.println("----------------------------------------------");
-
-        Optional<Client> clientOptional = dbServiceClient.getObject(id);
+        Optional<Client> clientOptional = dbServiceClient.getClient(idClient);
         clientOptional.ifPresentOrElse(
                 client -> logger.info("created client, name:{}", client.getName()),
                 () -> logger.info("client was not created")
         );
         System.out.println("----------------------------------------------");
-
-        id = dbServiceClient.saveObject(new Client(14, "dbServiceClient14New", 5), false);
+        idClient = dbServiceClient.saveClient(new Client(14, "dbServiceClient14New", 5));
         System.out.println("----------------------------------------------");
-
-        clientOptional = dbServiceClient.getObject(id);
+        clientOptional = dbServiceClient.getClient(idClient);
         clientOptional.ifPresentOrElse(
                 client -> logger.info("created client, name:{}", client.getName()),
                 () -> logger.info("client was not created")
         );
-
         System.out.println("----------------------------------------------");
-
-        id = dbServiceClient.saveObject(new Client(0, "dbServiceClient0", 0));
+        idClient = dbServiceClient.saveClient(new Client(0, "dbServiceClient0", 0));
         System.out.println("----------------------------------------------");
-
-        clientOptional = dbServiceClient.getObject(id);
+        clientOptional = dbServiceClient.getClient(idClient);
         clientOptional.ifPresentOrElse(
                 client -> logger.info("created client, name:{}", client.getName()),
                 () -> logger.info("client was not created")
         );
-
         System.out.println("-------------------------------------------");
         DbExecutor<Account> dbExecutorAccount = new DbExecutorImpl<>();
-        JdbcMapper<Account> jdbcMapperAccount = new JdbcMapperImpl<>(sessionManager, dbExecutorAccount);
-        ObjectDao<Account> accountDao = new ObjectDaoJdbc<>(jdbcMapperAccount, Account.class);
+        JdbcMapper<Account> jdbcMapperAccount = new JdbcMapperImpl<>(dbExecutorAccount);
+        AccountDao accountDao = new AccountDaoJdbc(sessionManager, jdbcMapperAccount);
 
-        DBService<Account> dbServiceAccount = new DBServiceImpl<>(accountDao);
-        id = dbServiceAccount.saveObject(new Account("11", "dbServiceAccount", 65.456), true);
+        DBServiceAccount dbServiceAccount = new DBServiceAccountImpl(accountDao);
+        String idAccount = dbServiceAccount.saveAccount(new Account("11", "dbServiceAccount", 65.456));
         System.out.println("----------------------------------------------");
 
-        Optional<Account> accountOptional = dbServiceAccount.getObject(id.toString());
+        Optional<Account> accountOptional = dbServiceAccount.getAccount(idAccount);
         accountOptional.ifPresentOrElse(
-                client -> logger.info("created account, type:{}", client.getName()),
+                account -> logger.info("created account, type:{}", account.getName()),
                 () -> logger.info("account was not created")
         );
 

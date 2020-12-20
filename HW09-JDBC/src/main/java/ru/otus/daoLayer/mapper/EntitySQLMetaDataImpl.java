@@ -3,7 +3,11 @@ package ru.otus.daoLayer.mapper;
 import java.lang.reflect.Field;
 
 public class EntitySQLMetaDataImpl implements EntitySQLMetaData {
-    EntityClassMetaData entityClassMetaData;
+    private final EntityClassMetaData entityClassMetaData;
+    private StringBuilder getSelectByIdSql;
+    private StringBuilder getInsertSql;
+    private StringBuilder getInsertWithoutIdSql;
+    private StringBuilder getUpdateSql;
 
     public EntitySQLMetaDataImpl(EntityClassMetaData entityClassMetaData) {
         this.entityClassMetaData = entityClassMetaData;
@@ -14,13 +18,15 @@ public class EntitySQLMetaDataImpl implements EntitySQLMetaData {
      */
     @Override
     public String getSelectByIdSql() {
-        StringBuilder buffer = new StringBuilder("SELECT ");
-        buffer.append(entityClassMetaData.getIdField().getName());
-        entityClassMetaData.getFieldsWithoutId().stream()
-                .map(field -> ((Field) field).getName())
-                .forEach(field -> buffer.append(", " + field));
-        buffer.append(" FROM " + entityClassMetaData.getName() + " WHERE " + entityClassMetaData.getIdField().getName() + " = ?");
-        return buffer.toString();
+        if (getSelectByIdSql == null) {
+            getSelectByIdSql = new StringBuilder("SELECT ");
+            getSelectByIdSql.append(entityClassMetaData.getIdField().getName());
+            entityClassMetaData.getFieldsWithoutId().stream()
+                    .map(field -> ((Field) field).getName())
+                    .forEach(field -> getSelectByIdSql.append(", " + field));
+            getSelectByIdSql.append(" FROM " + entityClassMetaData.getName() + " WHERE " + entityClassMetaData.getIdField().getName() + " = ?");
+        }
+        return getSelectByIdSql.toString();
     }
 
     /**
@@ -30,16 +36,19 @@ public class EntitySQLMetaDataImpl implements EntitySQLMetaData {
      */
     @Override
     public String getInsertSql() {
-        StringBuilder buffer = new StringBuilder("INSERT INTO " + entityClassMetaData.getName() + "(" + entityClassMetaData.getIdField().getName());
-        entityClassMetaData.getFieldsWithoutId().stream()
-                .map(field -> ((Field) field).getName())
-                .forEach(field -> buffer.append(", " + field));
-        buffer.append(") VALUES (?, ?, ?) ON CONFLICT (" + entityClassMetaData.getIdField().getName() + ") DO UPDATE SET ");
-        entityClassMetaData.getFieldsWithoutId().stream()
-                .map(field -> ((Field) field).getName())
-                .forEach(field -> buffer.append(field + " = excluded." + field + ", "));
-        buffer.delete(buffer.length() - 2, buffer.length());
-        return buffer.toString();
+        if (getInsertSql == null) {
+            getInsertSql = new StringBuilder("INSERT INTO " + entityClassMetaData.getName() + "(" + entityClassMetaData.getIdField().getName());
+            entityClassMetaData.getFieldsWithoutId().stream()
+                    .map(field -> ((Field) field).getName())
+                    .forEach(field -> getInsertSql.append(", " + field));
+            getInsertSql.append(") VALUES (?, ?, ?) ON CONFLICT (" + entityClassMetaData.getIdField().getName() + ") DO UPDATE SET ");
+            entityClassMetaData.getFieldsWithoutId().stream()
+                    .map(field -> ((Field) field).getName())
+                    .forEach(field -> getInsertSql.append(field + " = excluded." + field + ", "));
+            getInsertSql.delete(getInsertSql.length() - 2, getInsertSql.length());
+
+        }
+        return getInsertSql.toString();
     }
 
     /**
@@ -47,13 +56,16 @@ public class EntitySQLMetaDataImpl implements EntitySQLMetaData {
      */
     @Override
     public String getInsertWithoutIdSql() {
-        StringBuilder buffer = new StringBuilder("INSERT INTO " + entityClassMetaData.getName() + " (");
-        entityClassMetaData.getFieldsWithoutId().stream()
-                .map(field -> ((Field) field).getName())
-                .forEach(field -> buffer.append(field + ", "));
-        buffer.delete(buffer.length() - 2, buffer.length());
-        buffer.append(") VALUES (?, ?)");
-        return buffer.toString();
+        if (getInsertWithoutIdSql == null) {
+            getInsertWithoutIdSql = new StringBuilder("INSERT INTO " + entityClassMetaData.getName() + " (");
+            entityClassMetaData.getFieldsWithoutId().stream()
+                    .map(field -> ((Field) field).getName())
+                    .forEach(field -> getInsertWithoutIdSql.append(field + ", "));
+            getInsertWithoutIdSql.delete(getInsertWithoutIdSql.length() - 2, getInsertWithoutIdSql.length());
+            getInsertWithoutIdSql.append(") VALUES (?, ?)");
+
+        }
+        return getInsertWithoutIdSql.toString();
     }
 
     /**
@@ -61,14 +73,15 @@ public class EntitySQLMetaDataImpl implements EntitySQLMetaData {
      */
     @Override
     public String getUpdateSql() {
-        StringBuilder buffer = new StringBuilder("UPDATE " + entityClassMetaData.getName() + " SET (");
-        entityClassMetaData.getFieldsWithoutId().stream()
-                .map(field -> ((Field) field).getName())
-                .forEach(field -> buffer.append(field + ", "));
-        buffer.delete(buffer.length() - 2, buffer.length());
-        buffer.append(") = (?, ?) WHERE " + entityClassMetaData.getIdField().getName() + " = ?");
-        return buffer.toString();
+        if (getUpdateSql == null) {
+            getUpdateSql = new StringBuilder("UPDATE " + entityClassMetaData.getName() + " SET (");
+            entityClassMetaData.getFieldsWithoutId().stream()
+                    .map(field -> ((Field) field).getName())
+                    .forEach(field -> getUpdateSql.append(field + ", "));
+            getUpdateSql.delete(getUpdateSql.length() - 2, getUpdateSql.length());
+            getUpdateSql.append(") = (?, ?) WHERE " + entityClassMetaData.getIdField().getName() + " = ?");
+
+        }
+        return getUpdateSql.toString();
     }
-
-
 }
