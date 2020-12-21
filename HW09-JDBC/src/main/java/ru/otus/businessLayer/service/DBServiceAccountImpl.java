@@ -16,20 +16,12 @@ public class DBServiceAccountImpl implements DBServiceAccount {
         this.accountDao = accountDao;
     }
 
-    /**
-     * Выполняется INSERT, если id = null or "0" и INSERT_OR_UPDATE, если id != "0" or null
-     */
     @Override
     public String saveAccount(Account account) {
         try (var sessionManager = accountDao.getSessionManager()) {
             sessionManager.beginSession();
             try {
-                String accountId;
-                if (accountDao.getIdClient(account).equals("0")) {
-                    accountId = accountDao.insert(account);
-                } else {
-                    accountId = accountDao.insertOrUpdate(account);
-                }
+                String accountId = accountDao.insertOrUpdate(account);
                 sessionManager.commitSession();
                 logger.info("save {}, id: {}", account.getClass().getSimpleName(), accountId);
                 return accountId;

@@ -13,7 +13,5 @@ public interface AccountDao {
 
     Optional<Account> findById(String id);
 
-    String getIdClient(Account account);
-
     SessionManager getSessionManager();
 }

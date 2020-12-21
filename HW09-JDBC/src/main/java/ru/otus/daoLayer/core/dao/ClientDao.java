@@ -13,7 +13,5 @@ public interface ClientDao {
 
     Optional<Client> findById(long id);
 
-    long getIdClient(Client client);
-
     SessionManager getSessionManager();
 }

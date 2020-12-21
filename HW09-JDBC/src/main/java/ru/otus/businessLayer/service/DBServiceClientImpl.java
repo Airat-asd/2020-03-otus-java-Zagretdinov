@@ -16,20 +16,12 @@ public class DBServiceClientImpl implements DBServiceClient {
         this.clientDao = clientDao;
     }
 
-    /**
-     * Выполняется INSERT, если id = null or "0" и INSERT_OR_UPDATE, если id != "0" or null
-     */
     @Override
     public long saveClient(Client client) {
         try (var sessionManager = clientDao.getSessionManager()) {
             sessionManager.beginSession();
             try {
-                long clientId;
-                if (clientDao.getIdClient(client) == 0) {
-                    clientId = clientDao.insert(client);
-                } else {
-                    clientId = clientDao.insertOrUpdate(client);
-                }
+                long clientId = clientDao.insertOrUpdate(client);
                 sessionManager.commitSession();
                 logger.info("save {}, id: {}", client.getClass().getSimpleName(), clientId);
                 return clientId;

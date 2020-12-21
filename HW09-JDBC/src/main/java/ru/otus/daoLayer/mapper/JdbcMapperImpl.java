@@ -16,45 +16,52 @@ public class JdbcMapperImpl<T> implements JdbcMapper<T> {
     private EntityClassMetaData<T> entityClassMetaData;
     private EntitySQLMetaData entitySQLMetaData;
     private final DbExecutor<T> dbExecutor;
-    private Object id;
-    private final Map<T, List> objectParams = new HashMap<>();
+    private final Map<T, List<Object>> objectParams = new HashMap<>();
 
     public JdbcMapperImpl(DbExecutor<T> dbExecutor) {
         this.dbExecutor = dbExecutor;
     }
 
     @Override
-    public void insert(T objectData, SessionManagerJdbc sessionManager) {
+    public Optional<Object> insert(T objectData, SessionManagerJdbc sessionManager) {
         List<Object> paramsInsert = createParametersForInsert(objectData);
+        Object id = 0;
         try {
-            executor(entitySQLMetaData.getInsertWithoutIdSql(), paramsInsert, sessionManager);
+            id = executor(entitySQLMetaData.getInsertWithoutIdSql(), paramsInsert, sessionManager);
         } catch (SQLException troubles) {
             troubles.printStackTrace();
         }
+        return Optional.ofNullable(id);
     }
 
     @Override
-    public void insertOrUpdate(T objectData, SessionManagerJdbc sessionManager) {
+    public Optional<Object> insertOrUpdate(T objectData, SessionManagerJdbc sessionManager) {
         List<Object> paramsInsertOrUpdate = createParameters(objectData);
-        try {
-            executor(entitySQLMetaData.getInsertSql(), paramsInsertOrUpdate, sessionManager);
-        } catch (SQLException troubles) {
-            troubles.printStackTrace();
+        Object id = 0;
+        if (paramsInsertOrUpdate.get(0).toString().equals("0") || paramsInsertOrUpdate.get(0) == null) {
+            id = insert(objectData, sessionManager).orElse(0);
+        } else {
+            try {
+                executor(entitySQLMetaData.getInsertSql(), paramsInsertOrUpdate, sessionManager);
+                id = entityClassMetaData.getIdField().get(objectData);
+            } catch (SQLException | IllegalAccessException troubles) {
+                troubles.printStackTrace();
+            }
         }
+        return Optional.ofNullable(id);
     }
 
     @Override
     public void update(T objectData, SessionManagerJdbc sessionManager) throws SQLException {
-        List<Object> paramsUpdate = createParameters(objectData);
-        paramsUpdate.add(paramsUpdate.get(0));
-        paramsUpdate.remove(0);
-        executor(entitySQLMetaData.getUpdateSql(), paramsUpdate, sessionManager);
+        executor(entitySQLMetaData.getUpdateSql(), createParametersForUpdate(objectData), sessionManager);
     }
 
     @Override
     public T findById(Object id, Class<T> clazz, SessionManagerJdbc sessionManager) {
-        entityClassMetaData = new EntityClassMetaDataImpl<>(clazz);
-        entitySQLMetaData = new EntitySQLMetaDataImpl(entityClassMetaData);
+        if (this.entityClassMetaData == null) {
+            entityClassMetaData = new EntityClassMetaDataImpl<>(clazz);
+            entitySQLMetaData = new EntitySQLMetaDataImpl(entityClassMetaData);
+        }
         try {
             return dbExecutor.executeSelect(sessionManager.getCurrentSession().getConnection(), entitySQLMetaData.getSelectByIdSql(),
                     id,
@@ -81,17 +88,19 @@ public class JdbcMapperImpl<T> implements JdbcMapper<T> {
 
     private List<Object> createParameters(T objectData) {
         List<Object> parameters = new ArrayList<>();
-        if (objectParams.get(objectData) == null) {
-            entityClassMetaData = new EntityClassMetaDataImpl<>((Class<T>) objectData.getClass());
-            entitySQLMetaData = new EntitySQLMetaDataImpl(entityClassMetaData);
-            entityClassMetaData.getIdField().setAccessible(true);
+        if (this.entityClassMetaData == null) {
+            this.entityClassMetaData = new EntityClassMetaDataImpl<>((Class<T>) objectData.getClass());
+            this.entitySQLMetaData = new EntitySQLMetaDataImpl(entityClassMetaData);
+            this.entityClassMetaData.getIdField().setAccessible(true);
+        }
+        List<Object> readyParameters = objectParams.get(objectData);
+        if (readyParameters == null) {
             try {
-                this.id = entityClassMetaData.getIdField().get(objectData);
-                parameters.add(id);
+                parameters.add(entityClassMetaData.getIdField().get(objectData));
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }
-            entityClassMetaData.getFieldsWithoutId().forEach(field -> {
+            this.entityClassMetaData.getFieldsWithoutId().forEach(field -> {
                 field.setAccessible(true);
                 try {
                     parameters.add(field.get(objectData));
@@ -99,21 +108,23 @@ public class JdbcMapperImpl<T> implements JdbcMapper<T> {
                     e.printStackTrace();
                 }
             });
-            objectParams.put(objectData, parameters);
-        }
-        return objectParams.get(objectData);
+            this.objectParams.put(objectData, parameters);
+        } else return readyParameters;
+
+        return parameters;
     }
 
     private List<Object> createParametersForInsert(T objectData) {
-        List<Object> paramsForInsert = new ArrayList<>(createParameters(objectData));
+        List<Object> paramsForInsert = createParameters(objectData);
         paramsForInsert.remove(0);
         return paramsForInsert;
     }
 
-    @Override
-    public Object getId(T objectData) {
-        createParameters(objectData);
-        return id;
+    private List<Object> createParametersForUpdate(T objectData) {
+        List<Object> paramsUpdate = createParameters(objectData);
+        paramsUpdate.add(paramsUpdate.get(0));
+        paramsUpdate.remove(0);
+        return paramsUpdate;
     }
 
     private T initializationObject(EntityClassMetaData<T> entityClassMetaData, Object var1, Object var2, Object var3) {
@@ -127,7 +138,7 @@ public class JdbcMapperImpl<T> implements JdbcMapper<T> {
         return object;
     }
 
-    void executor(String insertSQL, List<Object> params, SessionManagerJdbc sessionManager) throws SQLException {
-        id = dbExecutor.executeInsert(sessionManager.getCurrentSession().getConnection(), insertSQL, params);
+    Object executor(String insertSQL, List<Object> params, SessionManagerJdbc sessionManager) throws SQLException {
+        return dbExecutor.executeInsert(sessionManager.getCurrentSession().getConnection(), insertSQL, params);
     }
 }
