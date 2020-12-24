@@ -52,8 +52,12 @@ public class EntitySQLMetaDataImpl implements EntitySQLMetaData {
                                 .append(", ")
                                 .append(field);
                     });
+            getInsertSql.append(") VALUES (");
+            entityClassMetaData.getAllFields().stream()
+                    .forEach((field) -> getInsertSql.append("?,"));
+            getInsertSql.deleteCharAt(getInsertSql.length() - 1);
             getInsertSql
-                    .append(") VALUES (?, ?, ?) ON CONFLICT (")
+                    .append(") ON CONFLICT (")
                     .append(entityClassMetaData.getIdField().getName())
                     .append(") DO UPDATE SET ");
             entityClassMetaData.getFieldsWithoutId().stream()
@@ -86,8 +90,11 @@ public class EntitySQLMetaDataImpl implements EntitySQLMetaData {
                                 .append(", ");
                     });
             getInsertWithoutIdSql.delete(getInsertWithoutIdSql.length() - 2, getInsertWithoutIdSql.length());
-            getInsertWithoutIdSql.append(") VALUES (?, ?)");
-
+            getInsertWithoutIdSql.append(") VALUES (");
+            entityClassMetaData.getFieldsWithoutId().stream()
+                    .forEach((field) -> getInsertWithoutIdSql.append("?,"));
+            getInsertWithoutIdSql.deleteCharAt(getInsertWithoutIdSql.length() - 1);
+            getInsertWithoutIdSql.append(")");
         }
         return getInsertWithoutIdSql.toString();
     }
@@ -108,7 +115,12 @@ public class EntitySQLMetaDataImpl implements EntitySQLMetaData {
                     });
             getUpdateSql.delete(getUpdateSql.length() - 2, getUpdateSql.length());
             getUpdateSql
-                    .append(") = (?, ?) WHERE ")
+                    .append(") = (");
+            entityClassMetaData.getFieldsWithoutId().stream()
+                    .forEach((field) -> getUpdateSql.append("?,"));
+            getUpdateSql.deleteCharAt(getUpdateSql.length() - 1);
+            getUpdateSql.
+                    append(") WHERE ")
                     .append(entityClassMetaData.getIdField().getName())
                     .append(" = ?");
         }

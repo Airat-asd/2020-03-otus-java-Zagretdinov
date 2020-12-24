@@ -2,7 +2,8 @@ create table Client
 (
     id serial not null unique primary key,
     name varchar(50),
-    age integer
+    age integer,
+    testField varchar(50)
 
 );
 

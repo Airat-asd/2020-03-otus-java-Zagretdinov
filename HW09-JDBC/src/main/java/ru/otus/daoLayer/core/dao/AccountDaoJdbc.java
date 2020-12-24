@@ -22,7 +22,7 @@ public class AccountDaoJdbc implements AccountDao {
     @Override
     public String insert(Account account) {
         try {
-            return jdbcMapper.insert(account, sessionManager).orElse(0).toString();
+            return jdbcMapper.insert(account).orElse(0).toString();
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new ObjectDaoException(e);
@@ -32,7 +32,7 @@ public class AccountDaoJdbc implements AccountDao {
     @Override
     public String insertOrUpdate(Account account) {
         try {
-            return jdbcMapper.insertOrUpdate(account, sessionManager).orElse(0).toString();
+            return jdbcMapper.insertOrUpdate(account).orElse(0).toString();
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new ObjectDaoException(e);
@@ -41,7 +41,7 @@ public class AccountDaoJdbc implements AccountDao {
 
     @Override
     public Optional<Account> findById(String id) {
-        return Optional.ofNullable(jdbcMapper.findById(id, Account.class, sessionManager));
+        return Optional.ofNullable(jdbcMapper.findById(id, Account.class));
     }
 
     @Override

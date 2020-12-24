@@ -1,11 +1,12 @@
 package ru.otus.businessLayer.model;
 
-import ru.otus.daoLayer.core.annotations.*;
+import ru.otus.daoLayer.core.annotations.Id;
 
 /**
  * @author Ayrat Zagretdinov
  * created on 14.07.2020
  */
+
 public class Account {
     @Id
     private final String no;

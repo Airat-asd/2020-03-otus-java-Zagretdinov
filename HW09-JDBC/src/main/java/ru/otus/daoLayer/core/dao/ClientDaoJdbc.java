@@ -22,7 +22,7 @@ public class ClientDaoJdbc implements ClientDao {
     @Override
     public long insert(Client client) {
         try {
-            return Long.parseLong(jdbcMapper.insert(client, sessionManager).orElse(0).toString());
+            return Long.parseLong(jdbcMapper.insert(client).orElse(0).toString());
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new ObjectDaoException(e);
@@ -32,7 +32,7 @@ public class ClientDaoJdbc implements ClientDao {
     @Override
     public long insertOrUpdate(Client client) {
         try {
-            return Long.parseLong(jdbcMapper.insertOrUpdate(client, sessionManager).orElse(0).toString());
+            return Long.parseLong(jdbcMapper.insertOrUpdate(client).orElse(0).toString());
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw new ObjectDaoException(e);
@@ -41,7 +41,7 @@ public class ClientDaoJdbc implements ClientDao {
 
     @Override
     public Optional<Client> findById(long id) {
-        return Optional.ofNullable(jdbcMapper.findById(id, Client.class, sessionManager));
+        return Optional.ofNullable(jdbcMapper.findById(id, Client.class));
     }
 
     @Override

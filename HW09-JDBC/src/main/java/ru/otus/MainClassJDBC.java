@@ -34,19 +34,20 @@ public class MainClassJDBC {
 
 //Работа спользователем
         DbExecutor<Client> dbExecutor = new DbExecutorImpl<>();
-        JdbcMapper<Client> jdbcMapperClient = new JdbcMapperImpl<>(dbExecutor);
+        JdbcMapper<Client> jdbcMapperClient = new JdbcMapperImpl<>(dbExecutor, sessionManager, Client.class);
         ClientDao clientDao = new ClientDaoJdbc(sessionManager, jdbcMapperClient);
 
         DBServiceClient dbServiceClient = new DBServiceClientImpl(clientDao);
-        long idClient = dbServiceClient.saveClient(new Client(14, "dbServiceClient14", 55));
+        long idClient = dbServiceClient.saveClient(new Client(14, "dbServiceClient14", 55, "test1"));
         System.out.println("----------------------------------------------");
+
         Optional<Client> clientOptional = dbServiceClient.getClient(idClient);
         clientOptional.ifPresentOrElse(
                 client -> logger.info("created client, name:{}", client.getName()),
                 () -> logger.info("client was not created")
         );
         System.out.println("----------------------------------------------");
-        idClient = dbServiceClient.saveClient(new Client(14, "dbServiceClient14New", 5));
+        idClient = dbServiceClient.saveClient(new Client(14, "dbServiceClient14New", 5, "test3"));
         System.out.println("----------------------------------------------");
         clientOptional = dbServiceClient.getClient(idClient);
         clientOptional.ifPresentOrElse(
@@ -54,7 +55,7 @@ public class MainClassJDBC {
                 () -> logger.info("client was not created")
         );
         System.out.println("----------------------------------------------");
-        idClient = dbServiceClient.saveClient(new Client(0, "dbServiceClient0", 0));
+        idClient = dbServiceClient.saveClient(new Client(0, "dbServiceClient0", 0, "test4"));
         System.out.println("----------------------------------------------");
         clientOptional = dbServiceClient.getClient(idClient);
         clientOptional.ifPresentOrElse(
@@ -63,7 +64,7 @@ public class MainClassJDBC {
         );
         System.out.println("-------------------------------------------");
         DbExecutor<Account> dbExecutorAccount = new DbExecutorImpl<>();
-        JdbcMapper<Account> jdbcMapperAccount = new JdbcMapperImpl<>(dbExecutorAccount);
+        JdbcMapper<Account> jdbcMapperAccount = new JdbcMapperImpl<>(dbExecutorAccount, sessionManager, Account.class);
         AccountDao accountDao = new AccountDaoJdbc(sessionManager, jdbcMapperAccount);
 
         DBServiceAccount dbServiceAccount = new DBServiceAccountImpl(accountDao);

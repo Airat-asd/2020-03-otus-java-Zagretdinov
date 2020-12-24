@@ -1,16 +1,14 @@
 package ru.otus.daoLayer.mapper;
 
-import ru.otus.jdbcImplementation.sessionmanager.SessionManagerJdbc;
-
 import java.sql.SQLException;
 import java.util.Optional;
 
 public interface JdbcMapper<T> {
-    Optional<Object> insert(T objectData, SessionManagerJdbc sessionManager);
+    Optional<Object> insert(T objectData);
 
-    void update(T objectData, SessionManagerJdbc sessionManager) throws SQLException;
+    void update(T objectData) throws SQLException;
 
-    Optional<Object> insertOrUpdate(T objectData, SessionManagerJdbc sessionManager);
+    Optional<Object> insertOrUpdate(T objectData);
 
-    T findById(Object id, Class<T> clazz, SessionManagerJdbc sessionManager);
+    T findById(Object id, Class<T> clazz);
     }
