@@ -1,31 +1,41 @@
 package ru.otus.businessLayer.model;
 
-/**
- * @author Ayrat Zagretdinov
- * created on 14.12.2020
- */
-public class Client {
-    @Id
-    private final long id;
-    private final String name;
-    private final int age;
+import javax.persistence.*;
 
-    public Client(long id, String name, int age) {
+@Entity
+@Table(name = "client")
+public class Client {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Column(name = "id")
+    private long id;
+
+    @Column(name = "name")
+    private String name;
+
+    public Client() {
+    }
+
+    public Client(long id, String name) {
         this.id = id;
         this.name = name;
-        this.age = age;
     }
 
     public long getId() {
         return id;
     }
 
+    public void setId(long id) {
+        this.id = id;
+    }
+
     public String getName() {
         return name;
     }
 
-    public int getAge() {
-        return age;
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override
@@ -33,7 +43,6 @@ public class Client {
         return "Client{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", age=" + age +
                 '}';
     }
 }

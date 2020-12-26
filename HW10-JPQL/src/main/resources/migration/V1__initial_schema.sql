@@ -1,15 +1,18 @@
-create table Client
+-- Для @GeneratedValue(strategy = GenerationType.IDENTITY)
+/*
+create table client
 (
-    id serial not null unique primary key,
-    name varchar(50),
-    age integer
-
+    id   bigserial not null primary key,
+    name varchar(50)
 );
 
-create table Account
-(
-    no varchar(20) not null unique primary key,
-    type varchar(50),
-    rest float
+ */
 
+-- Для @GeneratedValue(strategy = GenerationType.SEQUENCE)
+create sequence hibernate_sequence start with 1 increment by 1;
+
+create table client
+(
+    id   bigint not null primary key,
+    name varchar(50)
 );

@@ -8,7 +8,7 @@ plugins {
 
 idea {
     project {
-        languageLevel = 15
+        languageLevel = 11
     }
     module {
         downloadJavadoc = true
@@ -29,6 +29,7 @@ allprojects {
             imports {
                 mavenBom("org.springframework.boot:spring-boot-dependencies:2.2.6.RELEASE")
             }
+
             dependency("com.massisframework:j-text-utils:${Versions.jtext}")
             dependency("com.google.guava:guava:${Versions.guava}")
             dependency("org.openjdk.jmh:jmh-core:${Versions.jmh}")

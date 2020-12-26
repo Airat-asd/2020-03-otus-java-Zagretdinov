@@ -9,6 +9,8 @@ public interface ClientDao {
 
     long insert(Client client);
 
+    void update(Client client);
+
     long insertOrUpdate(Client client);
 
     Optional<Client> findById(long id);
