@@ -9,7 +9,7 @@ targetCompatibility = JavaVersion.VERSION_11
 
 dependencies {
     implementation("org.hibernate:hibernate-core")
-    implementation("com.zaxxer:HikariCP")
+//    implementation("com.zaxxer:HikariCP")
     implementation 'org.flywaydb:flyway-core'
     implementation 'org.postgresql:postgresql'
     implementation 'ch.qos.logback:logback-classic'

@@ -3,32 +3,60 @@ package ru.otus.businessLayer.model;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "phoneDataSet" )
+@Table(name = "tPhoneDataSet" )
 public class PhoneDataSet {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long phoneId;
+
+    @Column(name = "phone_number", nullable = false)
+    private String number;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id")
+    private User user;
 
     public PhoneDataSet() {}
 
-    public PhoneDataSet(long id, String number) {
-        this.id = id;
+    public PhoneDataSet(String number) {
         this.number = number;
     }
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private long id;
+    public PhoneDataSet(String number, User user) {
+        this.number = number;
+        this.user = user;
+    }
 
-    @Column(name = "number", nullable = false)
-    private String number;
+    public long getPhoneId() {
+        return phoneId;
+    }
+
+    public void setPhoneId(long phoneId) {
+        this.phoneId = phoneId;
+    }
 
     public String getNumber() {
         return number;
     }
 
-    public long getId() {
-        return id;
-    }
-
     public void setNumber(String number) {
         this.number = number;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    @Override
+    public String toString() {
+        return "PhoneDataSet{" +
+                "phoneId=" + phoneId +
+                ", phone_number='" + number + '\'' +
+                '}';
     }
 }

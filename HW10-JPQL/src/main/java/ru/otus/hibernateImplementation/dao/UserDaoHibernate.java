@@ -39,7 +39,7 @@ public class UserDaoHibernate implements UserDao {
             Session hibernateSession = currentSession.getHibernateSession();
             hibernateSession.persist(user);
             hibernateSession.flush();
-            return user.getId();
+            return user.getUserId();
         } catch (Exception e) {
             throw new DaoException(e);
         }
@@ -61,13 +61,13 @@ public class UserDaoHibernate implements UserDao {
         DatabaseSessionHibernate currentSession = sessionManager.getCurrentSession();
         try {
             Session hibernateSession = currentSession.getHibernateSession();
-            if (user.getId() > 0) {
+            if (user.getUserId() > 0) {
                 hibernateSession.merge(user);
             } else {
                 hibernateSession.persist(user);
                 hibernateSession.flush();
             }
-            return user.getId();
+            return user.getUserId();
         } catch (Exception e) {
             throw new DaoException(e);
         }

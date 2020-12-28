@@ -17,7 +17,10 @@ public class MigrationsExecutorFlyway {
     }
 
     public void cleanDb() {
+        System.out.println("--------------Clean DB---------------");
         flyway.clean();
+        System.out.println("--------------Clean DB ended---------------");
+
     }
 
     public void executeMigrations() {

@@ -5,36 +5,57 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "user" )
+@Table(name = "tUsers" )
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long userId;
 
-    @OneToMany(targetEntity = PhoneDataSet.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id")
+    @Column(name = "name")
+    private String name;
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "address_id")
+    private AddressDataSet addressDataSets;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+//    @JoinColumn(name = "user_id")
     private List<PhoneDataSet> phoneDataSet = new ArrayList<>();
-
-    @OneToOne(targetEntity = AddressDataSet.class, cascade = CascadeType.ALL)
-    @JoinColumn(name = "addressDataSet_id")
-    private AddressDataSet addressDataSet;
 
     public User() {}
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                '}';
+    public User(String name) {
+        this.name = name;
     }
 
-    public long getId() {
-        return id;
+    public User(long userId, String name, AddressDataSet addressDataSets, List<PhoneDataSet> phoneDataSet) {
+        this.userId = userId;
+        this.name = name;
+        this.addressDataSets = addressDataSets;
+        this.phoneDataSet = phoneDataSet;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public User(String name, AddressDataSet addressDataSets, List<PhoneDataSet> phoneDataSet) {
+        this.name = name;
+        this.addressDataSets = addressDataSets;
+        this.phoneDataSet = phoneDataSet;
+    }
+
+    public long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(long userId) {
+        this.userId = userId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public List<PhoneDataSet> getPhoneDataSet() {
@@ -45,17 +66,21 @@ public class User {
         this.phoneDataSet = phoneDataSet;
     }
 
-    public AddressDataSet getAddressDataSet() {
-        return addressDataSet;
+    public AddressDataSet getAddressDataSets() {
+        return addressDataSets;
     }
 
-    public void setAddressDataSet(AddressDataSet addressDataSet) {
-        this.addressDataSet = addressDataSet;
+    public void setAddressDataSets(AddressDataSet addressDataSet) {
+        this.addressDataSets = addressDataSet;
     }
 
-    public User(long id, List<PhoneDataSet> phoneDataSet, AddressDataSet addressDataSet) {
-        this.id = id;
-        this.phoneDataSet = phoneDataSet;
-        this.addressDataSet = addressDataSet;
+    @Override
+    public String toString() {
+        return "User{" +
+                "userId=" + userId +
+                ", name='" + name + '\'' +
+                ", phoneDataSet=" + phoneDataSet +
+                ", addressDataSet=" + addressDataSets +
+                '}';
     }
 }
