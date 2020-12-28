@@ -1,0 +1,35 @@
+plugins {
+    // Apply the java plugin to add support for Java
+    id 'java'
+}
+
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
+
+dependencies {
+    implementation("org.hibernate:hibernate-core")
+//    implementation("com.zaxxer:HikariCP")
+    implementation 'org.flywaydb:flyway-core'
+    implementation 'org.postgresql:postgresql'
+    implementation 'ch.qos.logback:logback-classic'
+
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine'
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params'
+    testImplementation group: 'org.assertj', name: 'assertj-core'
+    testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter'
+    testImplementation("org.testcontainers:junit-jupiter")
+    testImplementation("org.testcontainers:postgresql")
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}
+
+tasks.withType(JavaCompile) {
+    options.with {
+        encoding = 'UTF-8'
+    }
+}
