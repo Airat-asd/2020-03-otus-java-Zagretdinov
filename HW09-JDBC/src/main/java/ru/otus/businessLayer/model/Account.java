@@ -9,9 +9,11 @@ import ru.otus.daoLayer.core.annotations.Id;
 
 public class Account {
     @Id
-    private final String no;
-    private final String type;
-    private final double rest;
+    private String no;
+    private String type;
+    private double rest;
+
+    public Account() {}
 
     public Account(String no, String type, double rest) {
         this.no = no;
@@ -19,18 +21,29 @@ public class Account {
         this.rest = rest;
     }
 
-    public String getId() {
+    public String getNo() {
         return no;
     }
 
-    public String getName() {
+    public void setNo(String no) {
+        this.no = no;
+    }
+
+    public String getType() {
         return type;
     }
 
-    public double getAge() {
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public double getRest() {
         return rest;
     }
 
+    public void setRest(double rest) {
+        this.rest = rest;
+    }
 
     @Override
     public String toString() {

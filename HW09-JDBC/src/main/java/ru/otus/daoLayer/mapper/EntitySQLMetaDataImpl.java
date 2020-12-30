@@ -1,9 +1,11 @@
 package ru.otus.daoLayer.mapper;
 
+import java.util.Optional;
+
 public class EntitySQLMetaDataImpl implements EntitySQLMetaData {
     private final EntityClassMetaData<?> entityClassMetaData;
-    private StringBuilder getSelectByIdSql;
-    private StringBuilder getInsertSql;
+    private String getSelectByIdSql;
+    private String getInsertSql;
     private StringBuilder getInsertWithoutIdSql;
     private StringBuilder getUpdateSql;
 
@@ -17,23 +19,14 @@ public class EntitySQLMetaDataImpl implements EntitySQLMetaData {
     @Override
     public String getSelectByIdSql() {
         if (getSelectByIdSql == null) {
-            getSelectByIdSql = new StringBuilder("SELECT ");
-            getSelectByIdSql.append(entityClassMetaData.getIdField().getName());
-            entityClassMetaData.getFieldsWithoutId().stream()
+            Optional<String> buffer = entityClassMetaData.getFieldsWithoutId().stream()
                     .map(field -> field.getName())
-                    .forEach(field -> {
-                        getSelectByIdSql
-                                .append(", ")
-                                .append(field);
-                    });
-            getSelectByIdSql
-                    .append(" FROM ")
-                    .append(entityClassMetaData.getName())
-                    .append(" WHERE ")
-                    .append(entityClassMetaData.getIdField().getName())
-                    .append(" = ?");
+                    .reduce((field1, field2) -> field1 + ", " + field2);
+            getSelectByIdSql = String.format("SELECT %s, %s FROM %s WHERE %s = ?",
+                    entityClassMetaData.getIdField().getName(), buffer.get(), entityClassMetaData.getName(),
+                    entityClassMetaData.getIdField().getName());
         }
-        return getSelectByIdSql.toString();
+        return getSelectByIdSql;
     }
 
     /**
@@ -44,35 +37,47 @@ public class EntitySQLMetaDataImpl implements EntitySQLMetaData {
     @Override
     public String getInsertSql() {
         if (getInsertSql == null) {
-            getInsertSql = new StringBuilder("INSERT INTO " + entityClassMetaData.getName() + "(" + entityClassMetaData.getIdField().getName());
-            entityClassMetaData.getFieldsWithoutId().stream()
+            Optional<String> buffer1 = entityClassMetaData.getFieldsWithoutId().stream()
                     .map(field -> field.getName())
-                    .forEach(field -> {
-                        getInsertSql
-                                .append(", ")
-                                .append(field);
-                    });
-            getInsertSql.append(") VALUES (");
-            entityClassMetaData.getAllFields().stream()
-                    .forEach((field) -> getInsertSql.append("?,"));
-            getInsertSql.deleteCharAt(getInsertSql.length() - 1);
-            getInsertSql
-                    .append(") ON CONFLICT (")
-                    .append(entityClassMetaData.getIdField().getName())
-                    .append(") DO UPDATE SET ");
-            entityClassMetaData.getFieldsWithoutId().stream()
+                    .reduce((field1, field2) -> field1 + ", " + field2);
+            Optional<String> buffer2 = entityClassMetaData.getAllFields().stream()
+                    .map(field -> "?")
+                    .reduce((field1, field2) -> field1 + ", " + field2);
+            Optional<String> buffer3 = entityClassMetaData.getFieldsWithoutId().stream()
                     .map(field -> field.getName())
-                    .forEach(field -> {
-                        getInsertSql
-                                .append(field)
-                                .append(" = excluded.")
-                                .append(field)
-                                .append(", ");
-                    });
-            getInsertSql.delete(getInsertSql.length() - 2, getInsertSql.length());
+                    .reduce((field1, field2) -> field1 + " = excluded." + field1 + ", " + field2 + " = excluded." + field2);
 
+            getInsertSql = String.format("INSERT INTO %s (%s, %s) VALUES (%s) ON CONFLICT (%s) DO UPDATE SET %s",
+                    entityClassMetaData.getName(),entityClassMetaData.getIdField().getName(), buffer1.get(),
+                    buffer2.get(), entityClassMetaData.getIdField().getName(), buffer3.get());
+//            getInsertSql = new StringBuilder("INSERT INTO " + entityClassMetaData.getName() + "(" + entityClassMetaData.getIdField().getName());
+//            entityClassMetaData.getFieldsWithoutId().stream()
+//                    .map(field -> field.getName())
+//                    .forEach(field -> {
+//                        getInsertSql
+//                                .append(", ")
+//                                .append(field);
+//                    });
+//            getInsertSql.append(") VALUES (");
+//            entityClassMetaData.getAllFields().stream()
+//                    .forEach((field) -> getInsertSql.append("?,"));
+//            getInsertSql.deleteCharAt(getInsertSql.length() - 1);
+//            getInsertSql
+//                    .append(") ON CONFLICT (")
+//                    .append(entityClassMetaData.getIdField().getName())
+//                    .append(") DO UPDATE SET ");
+//            entityClassMetaData.getFieldsWithoutId().stream()
+//                    .map(field -> field.getName())
+//                    .forEach(field -> {
+//                        getInsertSql
+//                                .append(field)
+//                                .append(" = excluded.")
+//                                .append(field)
+//                                .append(", ");
+//                    });
+//            getInsertSql.delete(getInsertSql.length() - 2, getInsertSql.length());
         }
-        return getInsertSql.toString();
+        return getInsertSql;
     }
 
     /**

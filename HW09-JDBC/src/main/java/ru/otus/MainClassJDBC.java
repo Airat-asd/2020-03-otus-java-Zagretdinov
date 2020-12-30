@@ -13,6 +13,8 @@ import ru.otus.daoLayer.core.dao.AccountDao;
 import ru.otus.daoLayer.core.dao.AccountDaoJdbc;
 import ru.otus.daoLayer.core.dao.ClientDao;
 import ru.otus.daoLayer.core.dao.ClientDaoJdbc;
+import ru.otus.daoLayer.mapper.EntityClassMetaDataImpl;
+import ru.otus.daoLayer.mapper.EntitySQLMetaDataImpl;
 import ru.otus.daoLayer.mapper.JdbcMapper;
 import ru.otus.daoLayer.mapper.JdbcMapperImpl;
 import ru.otus.daoLayer.postgres.DataSourcePostgres;
@@ -34,7 +36,9 @@ public class MainClassJDBC {
 
 //Работа спользователем
         DbExecutor<Client> dbExecutor = new DbExecutorImpl<>();
-        JdbcMapper<Client> jdbcMapperClient = new JdbcMapperImpl<>(dbExecutor, sessionManager, Client.class);
+        EntityClassMetaDataImpl<Client> clientEntityClassMetaData = new EntityClassMetaDataImpl<>(Client.class);
+        JdbcMapper<Client> jdbcMapperClient = new JdbcMapperImpl<>(dbExecutor, sessionManager, clientEntityClassMetaData,
+                new EntitySQLMetaDataImpl(clientEntityClassMetaData));
         ClientDao clientDao = new ClientDaoJdbc(sessionManager, jdbcMapperClient);
 
         DBServiceClient dbServiceClient = new DBServiceClientImpl(clientDao);
@@ -64,7 +68,9 @@ public class MainClassJDBC {
         );
         System.out.println("-------------------------------------------");
         DbExecutor<Account> dbExecutorAccount = new DbExecutorImpl<>();
-        JdbcMapper<Account> jdbcMapperAccount = new JdbcMapperImpl<>(dbExecutorAccount, sessionManager, Account.class);
+        EntityClassMetaDataImpl<Account> accountEntityClassMetaData = new EntityClassMetaDataImpl<>(Account.class);
+        JdbcMapper<Account> jdbcMapperAccount = new JdbcMapperImpl<>(dbExecutorAccount, sessionManager,
+                accountEntityClassMetaData, new EntitySQLMetaDataImpl(accountEntityClassMetaData));
         AccountDao accountDao = new AccountDaoJdbc(sessionManager, jdbcMapperAccount);
 
         DBServiceAccount dbServiceAccount = new DBServiceAccountImpl(accountDao);
@@ -73,11 +79,9 @@ public class MainClassJDBC {
 
         Optional<Account> accountOptional = dbServiceAccount.getAccount(idAccount);
         accountOptional.ifPresentOrElse(
-                account -> logger.info("created account, type:{}", account.getName()),
+                account -> logger.info("created account, type:{}", account.getType()),
                 () -> logger.info("account was not created")
         );
-
-        System.out.println("-------------------------------------------");
     }
 
     private static void flywayMigrations(DataSource dataSource) {

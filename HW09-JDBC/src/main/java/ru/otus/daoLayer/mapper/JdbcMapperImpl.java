@@ -6,8 +6,8 @@ import ru.otus.jdbcImplementation.DbExecutor;
 import ru.otus.jdbcImplementation.sessionmanager.SessionManagerJdbc;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,11 +21,12 @@ public class JdbcMapperImpl<T> implements JdbcMapper<T> {
     private final DbExecutor<T> dbExecutor;
     private final SessionManagerJdbc sessionManager;
 
-    public JdbcMapperImpl(DbExecutor<T> dbExecutor, SessionManagerJdbc sessionManager, Class<T> clazz) {
+    public JdbcMapperImpl(DbExecutor<T> dbExecutor, SessionManagerJdbc sessionManager,
+                          EntityClassMetaData entityClassMetaData, EntitySQLMetaData entitySQLMetaData) {
         this.dbExecutor = dbExecutor;
         this.sessionManager = sessionManager;
-        this.entityClassMetaData = new EntityClassMetaDataImpl<>(clazz);
-        this.entitySQLMetaData = new EntitySQLMetaDataImpl(entityClassMetaData);
+        this.entityClassMetaData = entityClassMetaData;
+        this.entitySQLMetaData = entitySQLMetaData;
     }
 
     @Override
@@ -33,7 +34,7 @@ public class JdbcMapperImpl<T> implements JdbcMapper<T> {
         List<Object> paramsInsert = createParametersForInsert(objectData);
         Object id = 0;
         try {
-            id = executor(entitySQLMetaData.getInsertWithoutIdSql(), paramsInsert);
+            id = execute(entitySQLMetaData.getInsertWithoutIdSql(), paramsInsert);
         } catch (SQLException troubles) {
             troubles.printStackTrace();
         }
@@ -48,7 +49,7 @@ public class JdbcMapperImpl<T> implements JdbcMapper<T> {
             id = insert(objectData).orElse(0);
         } else {
             try {
-                executor(entitySQLMetaData.getInsertSql(), paramsInsertOrUpdate);
+                execute(entitySQLMetaData.getInsertSql(), paramsInsertOrUpdate);
                 id = entityClassMetaData.getIdField().get(objectData);
             } catch (SQLException | IllegalAccessException troubles) {
                 troubles.printStackTrace();
@@ -60,7 +61,7 @@ public class JdbcMapperImpl<T> implements JdbcMapper<T> {
     @Override
     public void update(T objectData) throws SQLException {
         List<Object> parametersForUpdate = createParametersForUpdate(objectData);
-        executor(entitySQLMetaData.getUpdateSql(), parametersForUpdate);
+        execute(entitySQLMetaData.getUpdateSql(), parametersForUpdate);
     }
 
     @Override
@@ -71,19 +72,7 @@ public class JdbcMapperImpl<T> implements JdbcMapper<T> {
                     rs -> {
                         try {
                             if (rs.next()) {
-                                Object[] args = new Object[entityClassMetaData.getAllFields().size()];
-                                final int[] i = {0};
-                                entityClassMetaData.getAllFields().stream()
-                                        .map(Field::getName)
-                                        .forEach(var -> {
-                                            try {
-                                                args[i[0]] = rs.getObject(var);
-                                                i[0]++;
-                                            } catch (SQLException throwables) {
-                                                throwables.printStackTrace();
-                                            }
-                                        });
-                                return initializationObject(entityClassMetaData, args);
+                                return initializeObject(rs);
                             }
                         } catch (SQLException e) {
                             logger.error(e.getMessage(), e);
@@ -91,7 +80,6 @@ public class JdbcMapperImpl<T> implements JdbcMapper<T> {
                         return null;
                     }
             ).orElse(null);
-
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
@@ -130,18 +118,28 @@ public class JdbcMapperImpl<T> implements JdbcMapper<T> {
         return paramsUpdate;
     }
 
-    private T initializationObject(EntityClassMetaData<T> entityClassMetaData, Object[] args) {
+    private T initializeObject(ResultSet rs) {
         Constructor<T> constructor = entityClassMetaData.getConstructor();
-        T object = null;
         try {
-            object = constructor.newInstance(args);
+            T entity = constructor.newInstance();
+            entityClassMetaData.getAllFields()
+                    .forEach(field -> {
+                        try {
+                            field.setAccessible(true);
+                            field.set(entity, rs.getObject(field.getName()));
+
+                        } catch (SQLException | IllegalAccessException throwables) {
+                            throwables.printStackTrace();
+                        }
+                    });
+            return entity;
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
-        return object;
+        return null;
     }
 
-    Object executor(String insertSQL, List<Object> params) throws SQLException {
+    Object execute(String insertSQL, List<Object> params) throws SQLException {
         return dbExecutor.executeInsert(sessionManager.getCurrentSession().getConnection(), insertSQL, params);
     }
 }
