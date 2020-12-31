@@ -74,7 +74,7 @@ public class MainClassJDBC {
         AccountDao accountDao = new AccountDaoJdbc(sessionManager, jdbcMapperAccount);
 
         DBServiceAccount dbServiceAccount = new DBServiceAccountImpl(accountDao);
-        String idAccount = dbServiceAccount.saveAccount(new Account("11", "dbServiceAccount", 65.456));
+        long idAccount = dbServiceAccount.saveAccount(new Account("11", "dbServiceAccount", 65.456));
         System.out.println("----------------------------------------------");
 
         Optional<Account> accountOptional = dbServiceAccount.getAccount(idAccount);

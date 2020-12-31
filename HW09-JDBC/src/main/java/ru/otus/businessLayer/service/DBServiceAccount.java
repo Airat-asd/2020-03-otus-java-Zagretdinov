@@ -5,7 +5,7 @@ import ru.otus.businessLayer.model.Account;
 import java.util.Optional;
 
 public interface DBServiceAccount {
-    String saveAccount(Account account);
+    long saveAccount(Account account);
 
-    Optional<Account> getAccount(String id);
+    Optional<Account> getAccount(long no);
 }

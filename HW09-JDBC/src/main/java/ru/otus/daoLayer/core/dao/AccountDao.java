@@ -7,11 +7,11 @@ import java.util.Optional;
 
 public interface AccountDao {
 
-    String insert(Account account);
+    long insert(Account account);
 
-    String insertOrUpdate(Account account);
+    long insertOrUpdate(Account account);
 
-    Optional<Account> findById(String id);
+    Optional<Account> findById(long no);
 
     SessionManager getSessionManager();
 }

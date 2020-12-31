@@ -17,11 +17,11 @@ public class DBServiceAccountImpl implements DBServiceAccount {
     }
 
     @Override
-    public String saveAccount(Account account) {
+    public long saveAccount(Account account) {
         try (var sessionManager = accountDao.getSessionManager()) {
             sessionManager.beginSession();
             try {
-                String accountId = accountDao.insertOrUpdate(account);
+                long accountId = accountDao.insertOrUpdate(account);
                 sessionManager.commitSession();
                 logger.info("save {}, id: {}", account.getClass().getSimpleName(), accountId);
                 return accountId;
@@ -34,11 +34,11 @@ public class DBServiceAccountImpl implements DBServiceAccount {
     }
 
     @Override
-    public Optional<Account> getAccount(String id) {
+    public Optional<Account> getAccount(long no) {
         try (var sessionManager = accountDao.getSessionManager()) {
             sessionManager.beginSession();
             try {
-                Optional<Account> accountOptional = accountDao.findById(id);
+                Optional<Account> accountOptional = accountDao.findById(no);
                 logger.info("account: {}", accountOptional.orElse(null));
                 return accountOptional;
             } catch (Exception e) {
