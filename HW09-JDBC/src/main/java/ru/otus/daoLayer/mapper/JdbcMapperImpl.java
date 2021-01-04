@@ -2,8 +2,8 @@ package ru.otus.daoLayer.mapper;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.otus.jdbcImplementation.DbExecutor;
-import ru.otus.jdbcImplementation.sessionmanager.SessionManagerJdbc;
+import ru.otus.base.DbExecutor;
+import ru.otus.base.sessionmanager.SessionManagerJdbc;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;

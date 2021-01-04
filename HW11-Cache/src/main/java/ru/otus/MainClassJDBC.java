@@ -18,9 +18,9 @@ import ru.otus.daoLayer.mapper.EntitySQLMetaDataImpl;
 import ru.otus.daoLayer.mapper.JdbcMapper;
 import ru.otus.daoLayer.mapper.JdbcMapperImpl;
 import ru.otus.daoLayer.postgres.DataSourcePostgres;
-import ru.otus.jdbcImplementation.DbExecutor;
-import ru.otus.jdbcImplementation.DbExecutorImpl;
-import ru.otus.jdbcImplementation.sessionmanager.SessionManagerJdbc;
+import ru.otus.base.DbExecutor;
+import ru.otus.base.DbExecutorImpl;
+import ru.otus.base.sessionmanager.SessionManagerJdbc;
 
 import javax.sql.DataSource;
 import java.util.Optional;

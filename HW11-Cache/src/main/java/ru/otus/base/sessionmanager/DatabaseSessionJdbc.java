@@ -1,4 +1,4 @@
-package ru.otus.jdbcImplementation.sessionmanager;
+package ru.otus.base.sessionmanager;
 
 import ru.otus.daoLayer.core.sessionmanager.DatabaseSession;
 

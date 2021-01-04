@@ -15,6 +15,12 @@ public class Client {
 
     public Client() {}
 
+    public Client(String name, int age, String testField) {
+        this.name = name;
+        this.age = age;
+        this.testField = testField;
+    }
+
     public Client(long id, String name, int age, String testField) {
         this.id = id;
         this.name = name;

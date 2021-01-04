@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import ru.otus.businessLayer.model.Client;
 import ru.otus.daoLayer.core.sessionmanager.SessionManager;
 import ru.otus.daoLayer.mapper.JdbcMapper;
-import ru.otus.jdbcImplementation.sessionmanager.SessionManagerJdbc;
+import ru.otus.base.sessionmanager.SessionManagerJdbc;
 
 import java.util.Optional;
 
