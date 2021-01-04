@@ -27,13 +27,13 @@ import java.util.Optional;
 
 @DisplayName("Проверяем наши entity ")
 class TestCacheImplementation {
-    protected static final String TEST_USER_NAME = "Evgeni";
-    protected static final String TEST_USER_NEW_NAME = "Alex";
+    protected static final String TEST_USER_NAME = "Evgeniy";
     protected static final String TEST_FIELD = "test_field";
     protected static final int TEST_AGE = 30;
 
-    protected SessionManagerJdbc sessionManager;
     private static TestContainersConfig.CustomPostgreSQLContainer CONTAINER;
+
+    protected SessionManagerJdbc sessionManager;
     private DBServiceClient dbServiceClient;
 
     @BeforeAll
