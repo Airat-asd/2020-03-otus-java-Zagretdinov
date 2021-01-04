@@ -12,9 +12,15 @@ import java.util.logging.Logger;
  * created on 03.02.19.
  */
 public class DataSourcePostgres implements DataSource {
-    private static final String URL = "jdbc:postgresql://localhost:5432/demoDB";
-    private static final String USER = "usr";
-    private static final String PASSWORD = "pwd";
+    private final String URL;
+    private final String USER;
+    private final String PASSWORD;
+
+    public DataSourcePostgres(String URL, String USER, String PASSWORD) {
+        this.URL = URL;
+        this.USER = USER;
+        this.PASSWORD = PASSWORD;
+    }
 
     @Override
     public Connection getConnection() throws SQLException {

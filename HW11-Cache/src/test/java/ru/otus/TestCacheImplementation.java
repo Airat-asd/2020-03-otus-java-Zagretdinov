@@ -13,6 +13,7 @@ import ru.otus.base.sessionmanager.SessionManagerJdbc;
 import ru.otus.businessLayer.model.Client;
 import ru.otus.businessLayer.service.DBServiceClient;
 import ru.otus.businessLayer.service.DBServiceClientImpl;
+import ru.otus.businessLayer.service.DBServiceClientImplWithoutCache;
 import ru.otus.daoLayer.core.dao.ClientDao;
 import ru.otus.daoLayer.core.dao.ClientDaoJdbc;
 import ru.otus.daoLayer.mapper.EntityClassMetaDataImpl;
@@ -35,6 +36,7 @@ class TestCacheImplementation {
 
     protected SessionManagerJdbc sessionManager;
     private DBServiceClient dbServiceClient;
+    private DBServiceClientImplWithoutCache dbServiceClientImplWithoutCache;
 
     @BeforeAll
     public static void init() {
@@ -58,7 +60,7 @@ class TestCacheImplementation {
         migrationsExecutor.cleanDb();
         migrationsExecutor.executeMigrations();
 
-        DataSource dataSource = new DataSourcePostgres();
+        DataSource dataSource = new DataSourcePostgres(dbUrl, dbUserName, dbPassword);
         sessionManager = new SessionManagerJdbc(dataSource);
 
         DbExecutor<Client> dbExecutor = new DbExecutorImpl<>();
@@ -67,101 +69,45 @@ class TestCacheImplementation {
                 new EntitySQLMetaDataImpl(clientEntityClassMetaData));
         ClientDao clientDao = new ClientDaoJdbc(sessionManager, jdbcMapperClient);
         dbServiceClient = new DBServiceClientImpl(clientDao);
-
+        dbServiceClientImplWithoutCache = new DBServiceClientImplWithoutCache(clientDao);
     }
 
     @AfterEach
     void tearDown() {
-        sessionManager.close();
     }
 
     @Test
-    @DisplayName(" сохраняем клиента без кэша")
-    void shouldCorrectSaveClient() {
-        Client savedUser = buildDefaultClient(TEST_USER_NAME, TEST_AGE, TEST_FIELD);
-        for (int i = 1; i < 10000; i++) {
+    @DisplayName(" загружаем клиента с кэшем")
+    void saveClientWithCache() {
+        for (int i = 1; i < 100; i++) {
+            Client savedUser = buildDefaultClient(i, TEST_USER_NAME, TEST_AGE, TEST_FIELD);
             dbServiceClient.saveClient(savedUser);
         }
 
-        for (int i = 1; i < 10000; i++) {
+        for (int i = 1; i < 100; i++) {
             Optional<Client> clientOptional = dbServiceClient.getClient(i);
         }
-//        assertThat(loadedClient).isNotNull().usingRecursiveComparison().isEqualTo(savedUser);
     }
 
+    @Test
+    @DisplayName(" загружаем клиента без кэша")
+    void shouldCorrectSaveClient() {
+        for (int i = 1; i < 100; i++) {
+            Client savedUser = buildDefaultClient(i, TEST_USER_NAME, TEST_AGE, TEST_FIELD);
+            dbServiceClientImplWithoutCache.saveClient(savedUser);
+        }
 
-//    @Test
-//    @DisplayName(" проверяем что при сохранении нового объекта не должно быть update")
-//    void shouldNotUpdate() {
-//        User savedUser1 = buildDefaultClient(TEST_USER_NAME, TEST_ADDRESS_DATA_SET, TEST_PHONE_DATA_SET);
-//        User savedUser2 = buildDefaultClient(TEST_USER_NEW_NAME, TEST_ADDRESS_DATA_SET_NEW, TEST_PHONE_DATA_SET_NEW);
-//        dbServiceUser.saveUser(savedUser1);
-//        dbServiceUser.saveUser(savedUser2);
-//
-//        assertThat(getUsageStatistics(User.class).getUpdateCount()).isEqualTo(0);
-//    }
-//
-//    @Test
-//    @DisplayName(" корректно загружать юзера")
-//    void shouldLoadCorrectClient() {
-//        User savedUser = buildDefaultClient(TEST_USER_NAME, TEST_ADDRESS_DATA_SET, TEST_PHONE_DATA_SET);
-//        saveClient(savedUser);
-//
-//        Optional<User> mayBeUser = dbServiceUser.getUser(savedUser.getUserId());
-//
-//        assertThat(mayBeUser).isPresent().get().usingRecursiveComparison().isEqualTo(savedUser);
-//
-//        System.out.println(savedUser);
-//        mayBeUser.ifPresent(System.out::println);
-//    }
-//
-//    @Test
-//    @DisplayName(" корректно изменять ранее сохраненного юзера")
-//    void shouldCorrectUpdateSavedClient() {
-//        User savedUser = buildDefaultClient(TEST_USER_NAME, TEST_ADDRESS_DATA_SET, TEST_PHONE_DATA_SET);
-//        saveClient(savedUser);
-//
-//        User savedUser2 = new User(savedUser.getUserId(), TEST_USER_NEW_NAME, TEST_ADDRESS_DATA_SET_NEW,
-//                Collections.singletonList(TEST_PHONE_DATA_SET_NEW));
-//        TEST_ADDRESS_DATA_SET_NEW.setAddressId(savedUser.getUserId());
-//        TEST_PHONE_DATA_SET_NEW.setUser(savedUser2);
-//        TEST_PHONE_DATA_SET_NEW.setPhoneId(savedUser.getUserId());
-//        System.out.println("savedUser=" + savedUser);
-//
-//        long id = dbServiceUser.saveUser(savedUser2);
-//        System.out.println("savedUser2=" + savedUser2);
-//        System.out.println("id=" + id);
-//        User loadedUser = loadClient(id);
-//
-//        assertThat(loadedUser).isNotNull().usingRecursiveComparison().isEqualTo(savedUser2);
-//
-//        System.out.println(savedUser);
-//        System.out.println(savedUser2);
-//        System.out.println(loadedUser);
-//        assertThat(getUsageStatistics(User.class).getInsertCount()).isEqualTo(1);
-//        assertThat(getUsageStatistics(User.class).getUpdateCount()).isEqualTo(1);
-//    }
+        System.gc();
+        for (int i = 1; i < 100; i++) {
+            Optional<Client> clientOptional = dbServiceClientImplWithoutCache.getClient(i);
+        }
+    }
 
     protected Client buildDefaultClient(String name, int age, String testField) {
         return new Client(name, age, testField);
     }
 
-//    protected void saveClient(Client client) {
-//        try (Session session = sessionFactory.openSession()) {
-//            saveClient(session, client);
-//        }
-//    }
-//
-//    protected void saveClient(Session session, User user) {
-//        session.beginTransaction();
-//        session.save(user);
-//        session.getTransaction().commit();
-//    }
-//
-//    protected Client loadClient(long id) {
-//        try (Session session = sessionFactory.openSession()) {
-//            return session.find(User.class, id);
-//        }
-//    }
-//
+    protected Client buildDefaultClient(int id, String name, int age, String testField) {
+        return new Client(id, name, age, testField);
+    }
 }
