@@ -46,7 +46,6 @@ class TestingTheCreationOfTablesInHibernet {
     @AfterAll
     public static void shutdown() {
         CONTAINER.stop();
-
     }
 
     @BeforeEach
@@ -103,7 +102,7 @@ class TestingTheCreationOfTablesInHibernet {
         dbServiceUser.saveUser(savedUser1);
         dbServiceUser.saveUser(savedUser2);
 
-        assertThat(getUsageStatistics(User.class).getUpdateCount()).isEqualTo(0);
+        assertThat(getUsageStatistics(User.class).getUpdateCount()).isZero();
     }
     @Test
     @DisplayName(" корректно загружать юзера")
