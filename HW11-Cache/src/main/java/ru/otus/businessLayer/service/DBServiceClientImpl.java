@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.otus.businessLayer.model.Client;
 import ru.otus.cache.HwCache;
+import ru.otus.cache.HwListener;
 import ru.otus.cache.MyCache;
 import ru.otus.daoLayer.core.dao.ClientDao;
 
@@ -18,6 +19,14 @@ public class DBServiceClientImpl implements DBServiceClient {
 
     public DBServiceClientImpl(ClientDao clientDao) {
         this.clientDao = clientDao;
+        HwListener<Long, Client> listener = new HwListener<>() {
+            @Override
+            public void notify(Long key, Client value, String action) {
+                logger.info("key:{}, value:{}, action: {}", key, value, action);
+            }
+        };
+
+        cache.addListener(listener);
     }
 
     @Override
@@ -46,7 +55,7 @@ public class DBServiceClientImpl implements DBServiceClient {
         Client client = cache.get(id);
         if (client != null) {
             logger.info("client: {}", client);
-            return Optional.ofNullable(client);
+            return Optional.of(client);
         }
         try (var sessionManager = clientDao.getSessionManager()) {
             sessionManager.beginSession();
