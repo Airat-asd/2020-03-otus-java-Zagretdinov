@@ -22,7 +22,7 @@ public class JdbcMapperImpl<T> implements JdbcMapper<T> {
     private final SessionManagerJdbc sessionManager;
 
     public JdbcMapperImpl(DbExecutor<T> dbExecutor, SessionManagerJdbc sessionManager,
-                          EntityClassMetaData entityClassMetaData, EntitySQLMetaData entitySQLMetaData) {
+                          EntityClassMetaData<T> entityClassMetaData, EntitySQLMetaData entitySQLMetaData) {
         this.dbExecutor = dbExecutor;
         this.sessionManager = sessionManager;
         this.entityClassMetaData = entityClassMetaData;
@@ -32,7 +32,7 @@ public class JdbcMapperImpl<T> implements JdbcMapper<T> {
     @Override
     public Optional<Object> insert(T objectData) {
         List<Object> paramsInsert = createParametersForInsert(objectData);
-        Object id = 0;
+        Object id = null;
         try {
             id = execute(entitySQLMetaData.getInsertWithoutIdSql(), paramsInsert);
         } catch (SQLException troubles) {
