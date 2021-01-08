@@ -22,7 +22,7 @@ public class DBServiceClientImpl implements DBServiceClient {
         HwListener<String, Client> listener = new HwListener<>() {
             @Override
             public void notify(String key, Client value, String action) {
-                logger.info("Cache login: key:{}, value:{}, action: {}", key, value, action);
+                logger.info("Cache: key:{}, value:{}, action: {}", key, value, action);
             }
         };
         cache.addListener(listener);
