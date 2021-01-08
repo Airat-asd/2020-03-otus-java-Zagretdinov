@@ -1,4 +1,4 @@
-package ru.otus.jdbcImplementation.dao;
+package ru.otus.base.dao;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -6,7 +6,7 @@ import ru.otus.businessLayer.model.Client;
 import ru.otus.daoLayer.core.dao.ClientDaoJdbc;
 import ru.otus.daoLayer.mapper.JdbcMapperImpl;
 import ru.otus.daoLayer.postgres.DataSourcePostgres;
-import ru.otus.jdbcImplementation.DbExecutor;
+import ru.otus.base.DbExecutor;
 
 import java.util.Optional;
 
