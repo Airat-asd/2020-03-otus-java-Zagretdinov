@@ -15,17 +15,16 @@ public class DBServiceClientImpl implements DBServiceClient {
 
     private final ClientDao clientDao;
 
-    private HwCache<Long, Client> cache = new MyCache<>();
+    private final HwCache<String, Client> cache = new MyCache<>();
 
     public DBServiceClientImpl(ClientDao clientDao) {
         this.clientDao = clientDao;
-        HwListener<Long, Client> listener = new HwListener<>() {
+        HwListener<String, Client> listener = new HwListener<>() {
             @Override
-            public void notify(Long key, Client value, String action) {
-                logger.info("key:{}, value:{}, action: {}", key, value, action);
+            public void notify(String key, Client value, String action) {
+                logger.info("Cache login: key:{}, value:{}, action: {}", key, value, action);
             }
         };
-
         cache.addListener(listener);
     }
 
@@ -37,13 +36,13 @@ public class DBServiceClientImpl implements DBServiceClient {
             try {
                 clientId = clientDao.insertOrUpdate(client);
                 client.setId(clientId);
-                cache.put(clientId, client);
+                cache.put(String.valueOf(clientId), client);
                 sessionManager.commitSession();
                 logger.info("save {}, id: {}", client.getClass().getSimpleName(), clientId);
                 return clientId;
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
-                cache.remove(clientId);
+                cache.remove(String.valueOf(clientId));
                 sessionManager.rollbackSession();
                 throw new DbServiceException(e);
             }
@@ -52,7 +51,7 @@ public class DBServiceClientImpl implements DBServiceClient {
 
     @Override
     public Optional<Client> getClient(long id) {
-        Client client = cache.get(id);
+        Client client = cache.get(String.valueOf(id));
         if (client != null) {
             logger.info("client: {}", client);
             return Optional.of(client);
@@ -61,6 +60,7 @@ public class DBServiceClientImpl implements DBServiceClient {
             sessionManager.beginSession();
             try {
                 Optional<Client> clientOptional = clientDao.findById(id);
+                cache.put(String.valueOf(id), clientOptional.orElse(null));
                 logger.info("client: {}", clientOptional.orElse(null));
                 return clientOptional;
             } catch (Exception e) {

@@ -5,36 +5,22 @@ import org.jetbrains.annotations.NotNull;
 import java.lang.ref.SoftReference;
 import java.util.*;
 
-/**
- * @author sergey
- * created on 14.12.18.
- */
 public class MyCache<K, V> implements HwCache<K, V> {
 
     private final Map<K, V> cache = new WeakHashMap<>();
-    private List<SoftReference<HwListener<K, V>>> listOfListener = new ArrayList<>();
+    private final List<SoftReference<HwListener<K, V>>> listOfListener = new ArrayList<>();
 
     @Override
     public void put(@NotNull K key, V value) {
         cache.put(key, value);
-        listOfListener.forEach(listeners -> {
-            HwListener<K, V> listener = listeners.get();
-            if (listener != null) {
-                listener.notify(key, value, "put");
-            }
-        });
+        forEachListeners(key, value, "put");
     }
 
     @Override
     public void remove(K key) {
         V remove = cache.remove(key);
         if (remove != null) {
-            listOfListener.forEach(listeners -> {
-                HwListener<K, V> listener = listeners.get();
-                if (listener != null) {
-                    listener.notify(key, remove, "remove");
-                }
-            });
+            forEachListeners(key, remove, "remove");
         }
     }
 
@@ -42,14 +28,24 @@ public class MyCache<K, V> implements HwCache<K, V> {
     public V get(@NotNull K key) {
         V value = cache.get(key);
         if (value != null) {
-            listOfListener.forEach(listeners -> {
-                HwListener<K, V> listener = listeners.get();
-                if (listener != null) {
-                    listener.notify(key, value, "get");
-                }
-            });
+            forEachListeners(key, value, "get");
         }
         return value;
+    }
+
+    private void forEachListeners(@NotNull K key, V value, String action) {
+        listOfListener.forEach(listeners -> {
+            HwListener<K, V> listener = listeners.get();
+            if (listener != null) {
+                try {
+                    listener.notify(key, value, action);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else {
+                listOfListener.remove(listeners);
+            }
+        });
     }
 
     @Override
