@@ -1,9 +1,9 @@
-package ru.otus.daoLayer.mapper;
+package otus.daoLayer.mapper;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.otus.base.DbExecutor;
-import ru.otus.base.sessionmanager.SessionManagerJdbc;
+import ru.otus.jdbcImplementation.DbExecutor;
+import ru.otus.jdbcImplementation.sessionmanager.SessionManagerJdbc;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -22,7 +22,7 @@ public class JdbcMapperImpl<T> implements JdbcMapper<T> {
     private final SessionManagerJdbc sessionManager;
 
     public JdbcMapperImpl(DbExecutor<T> dbExecutor, SessionManagerJdbc sessionManager,
-                          EntityClassMetaData<T> entityClassMetaData, EntitySQLMetaData entitySQLMetaData) {
+                          EntityClassMetaData entityClassMetaData, EntitySQLMetaData entitySQLMetaData) {
         this.dbExecutor = dbExecutor;
         this.sessionManager = sessionManager;
         this.entityClassMetaData = entityClassMetaData;
@@ -32,7 +32,7 @@ public class JdbcMapperImpl<T> implements JdbcMapper<T> {
     @Override
     public Optional<Object> insert(T objectData) {
         List<Object> paramsInsert = createParametersForInsert(objectData);
-        Object id = null;
+        Object id = 0;
         try {
             id = execute(entitySQLMetaData.getInsertWithoutIdSql(), paramsInsert);
         } catch (SQLException troubles) {
