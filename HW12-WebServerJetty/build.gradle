@@ -1,0 +1,59 @@
+plugins {
+    // Apply the java plugin to add support for Java
+    id 'java'
+    id 'com.github.johnrengelman.shadow'
+}
+
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
+
+dependencies {
+    implementation("org.hibernate:hibernate-core")
+//    implementation("com.zaxxer:HikariCP")
+    implementation 'org.flywaydb:flyway-core'
+    implementation 'org.postgresql:postgresql'
+    implementation 'ch.qos.logback:logback-classic'
+    implementation("com.google.code.gson:gson:${Versions.json}")
+    implementation 'org.jetbrains:annotations:19.0.0'
+
+    implementation("org.eclipse.jetty:jetty-servlet:${Versions.jetty}")
+    implementation("org.eclipse.jetty:jetty-server:${Versions.jetty}")
+    implementation("org.eclipse.jetty:jetty-webapp:${Versions.jetty}")
+    implementation("org.eclipse.jetty:jetty-security:${Versions.jetty}")
+    implementation("org.eclipse.jetty:jetty-http:${Versions.jetty}")
+    implementation("org.eclipse.jetty:jetty-io:${Versions.jetty}")
+    implementation("org.eclipse.jetty:jetty-util:${Versions.jetty}")
+
+    implementation("org.freemarker:freemarker:${Versions.freemarker}")
+
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-engine'
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-params'
+    testImplementation group: 'org.assertj', name: 'assertj-core'
+    testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter'
+    testImplementation("org.testcontainers:junit-jupiter")
+    testImplementation("org.testcontainers:postgresql")
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}
+
+tasks.withType(JavaCompile) {
+    options.with {
+        encoding = 'UTF-8'
+    }
+}
+
+shadowJar {
+    archiveBaseName.set('HW12-WebServer')
+    archiveVersion.set('0.1')
+    archiveClassifier.set('')
+    manifest {
+        attributes 'Main-Class': 'ru.otus.otus.MainClassWebServer'
+    }
+}
+
+tasks.build.dependsOn tasks.shadowJar
