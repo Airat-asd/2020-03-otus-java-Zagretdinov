@@ -4,18 +4,12 @@ create table tUsers
 (
     userId   bigserial not null primary key,
     name varchar(50),
-    address_id bigint
+    passwordHash integer
 );
 
-create table tAddressDataSet
+create table tAdministrators
 (
-    addressId   bigserial not null primary key,
-    street varchar(50)
-);
-
-create table tPhoneDataSet
-(
-    phoneId   bigserial not null primary key,
-    phone_number varchar(50),
-    user_id bigint
+    userId   bigserial not null primary key,
+    name varchar(50),
+    passwordHash integer
 );

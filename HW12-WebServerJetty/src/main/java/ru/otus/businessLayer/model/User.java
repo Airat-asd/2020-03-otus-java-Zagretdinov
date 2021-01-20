@@ -1,8 +1,6 @@
 package ru.otus.businessLayer.model;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "tUsers" )
@@ -15,12 +13,11 @@ public class User {
     @Column(name = "name")
     private String name;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "address_id")
-    private AddressDataSet addressDataSets;
+    @Column(name = "passwordHash")
+    private int passwordHash;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<PhoneDataSet> phoneDataSet = new ArrayList<>();
+    @Column(name = "administratorFlag")
+    private boolean administratorFlag = false;
 
     public User() {}
 
@@ -28,17 +25,21 @@ public class User {
         this.name = name;
     }
 
-    public User(long userId, String name, AddressDataSet addressDataSets, List<PhoneDataSet> phoneDataSet) {
-        this.userId = userId;
+    public User(String name, int passwordHash, boolean administratorFlag) {
         this.name = name;
-        this.addressDataSets = addressDataSets;
-        this.phoneDataSet = phoneDataSet;
+        this.passwordHash = passwordHash;
+        this.administratorFlag = administratorFlag;
     }
 
-    public User(String name, AddressDataSet addressDataSets, List<PhoneDataSet> phoneDataSet) {
+    public User(long userId, String name, int passwordHash) {
+        this.userId = userId;
         this.name = name;
-        this.addressDataSets = addressDataSets;
-        this.phoneDataSet = phoneDataSet;
+        this.passwordHash = passwordHash;
+    }
+
+    public User(String name, int passwordHash) {
+        this.name = name;
+        this.passwordHash = passwordHash;
     }
 
     public long getUserId() {
@@ -61,20 +62,12 @@ public class User {
         this.name = name;
     }
 
-    public List<PhoneDataSet> getPhoneDataSet() {
-        return phoneDataSet;
+    public int getPasswordHash() {
+        return passwordHash;
     }
 
-    public void setPhoneDataSet(List<PhoneDataSet> phoneDataSet) {
-        this.phoneDataSet = phoneDataSet;
-    }
-
-    public AddressDataSet getAddressDataSets() {
-        return addressDataSets;
-    }
-
-    public void setAddressDataSets(AddressDataSet addressDataSet) {
-        this.addressDataSets = addressDataSet;
+    public void setPasswordHash(int passwordHash) {
+        this.passwordHash = passwordHash;
     }
 
     @Override
@@ -82,8 +75,8 @@ public class User {
         return "User{" +
                 "userId=" + userId +
                 ", name='" + name + '\'' +
-                ", phoneDataSet=" + phoneDataSet +
-                ", addressDataSet=" + addressDataSets +
+                ", passwordHash=" + passwordHash +
+                ", administrator=" + administratorFlag +
                 '}';
     }
 }

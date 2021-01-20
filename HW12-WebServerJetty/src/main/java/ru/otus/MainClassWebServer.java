@@ -1,11 +1,11 @@
 package ru.otus;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.otus.businessLayer.model.AddressDataSet;
-import ru.otus.businessLayer.model.PhoneDataSet;
 import ru.otus.businessLayer.model.User;
 import ru.otus.businessLayer.service.DBServiceUser;
 import ru.otus.businessLayer.service.DBServiceUserImpl;
@@ -14,8 +14,12 @@ import ru.otus.flyway.MigrationsExecutorFlyway;
 import ru.otus.hibernateImplementation.HibernateUtils;
 import ru.otus.hibernateImplementation.dao.UserDaoHibernate;
 import ru.otus.hibernateImplementation.sessionmanager.SessionManagerHibernate;
-
-import java.util.Collections;
+import ru.otus.server.UsersWebServer;
+import ru.otus.server.UsersWebServerWithFilterBasedSecurity;
+import ru.otus.services.TemplateProcessor;
+import ru.otus.services.TemplateProcessorImpl;
+import ru.otus.services.UserAuthService;
+import ru.otus.services.UserAuthServiceImpl;
 
 public class MainClassWebServer {
     private static final Logger logger = LoggerFactory.getLogger(MainClassWebServer.class);
@@ -24,12 +28,23 @@ public class MainClassWebServer {
     private static final int WEB_SERVER_PORT = 8080;
     private static final String TEMPLATES_DIR = "/templates/";
 
-
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
 
         DBServiceUser dbServiceUser = createDBServiceUser();
-        dbServiceUser.saveUser(new User("Vasia", new AddressDataSet("Test_Street_1"), Collections.singletonList(new PhoneDataSet("+7894456"))));
+        dbServiceUser.saveUser(new User("Administrator", "asdasdas".hashCode(), true));
+        dbServiceUser.saveUser(new User("Vasia", "asdasdas".hashCode()));
+        dbServiceUser.saveUser(new User("Petia", "asdasdas".hashCode()));
+        dbServiceUser.saveUser(new User("Kolia", "asdasdas".hashCode()));
 
+        Gson gson = new GsonBuilder().serializeNulls().setPrettyPrinting().create();
+        TemplateProcessor templateProcessor = new TemplateProcessorImpl(TEMPLATES_DIR);
+        UserAuthService authService = new UserAuthServiceImpl(dbServiceUser);
+
+        UsersWebServer usersWebServer = new UsersWebServerWithFilterBasedSecurity(WEB_SERVER_PORT,
+                authService, dbServiceUser, gson, templateProcessor);
+
+//        usersWebServer.start();
+//        usersWebServer.join();
     }
 
     public static DBServiceUser createDBServiceUser() {
@@ -39,10 +54,12 @@ public class MainClassWebServer {
         String dbUserName = configuration.getProperty("hibernate.connection.username");
         String dbPassword = configuration.getProperty("hibernate.connection.password");
 
-        new MigrationsExecutorFlyway(dbUrl, dbUserName, dbPassword).executeMigrations();
+        MigrationsExecutorFlyway flyway =
+                new MigrationsExecutorFlyway(dbUrl, dbUserName, dbPassword);
+        flyway.cleanDb();
+        flyway.executeMigrations();
 
-        SessionFactory sessionFactory = HibernateUtils.buildSessionFactory(configuration, User.class,
-                AddressDataSet.class, PhoneDataSet.class);
+        SessionFactory sessionFactory = HibernateUtils.buildSessionFactory(configuration, User.class);
 
         SessionManagerHibernate sessionManager = new SessionManagerHibernate(sessionFactory);
 
