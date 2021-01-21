@@ -17,14 +17,13 @@ public class DBServiceUserImpl implements DBServiceUser {
     }
 
     @Override
-    public long saveUser(User user) {
+    public void saveUser(User user) {
         try (var sessionManager = userDao.getSessionManager()) {
             sessionManager.beginSession();
             try {
-                long userId = userDao.insertOrUpdate(user);
+                userDao.insert(user);
                 sessionManager.commitSession();
-                logger.info("save {}, id: {}", user.getClass().getSimpleName(), userId);
-                return userId;
+                logger.info("save {}, id: {}", user.getClass().getSimpleName(), user.getName());
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
                 sessionManager.rollbackSession();
@@ -34,11 +33,11 @@ public class DBServiceUserImpl implements DBServiceUser {
     }
 
     @Override
-    public Optional<User> getUser(long id) {
+    public Optional<User> getUser(String name) {
         try (var sessionManager = userDao.getSessionManager()) {
             sessionManager.beginSession();
             try {
-                Optional<User> userOptional = userDao.findById(id);
+                Optional<User> userOptional = userDao.findByName(name);
                 logger.info("client: {}", userOptional.orElse(null));
                 return userOptional;
             } catch (Exception e) {

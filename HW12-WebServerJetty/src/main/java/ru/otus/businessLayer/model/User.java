@@ -7,17 +7,13 @@ import javax.persistence.*;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long userId;
-
-    @Column(name = "name")
-    private String name;
+    private String name = "";
 
     @Column(name = "passwordHash")
     private int passwordHash;
 
-    @Column(name = "administratorFlag")
-    private boolean administratorFlag = false;
+    @Column(name = "isAnAdministrator")
+    private boolean isAnAdministrator = false;
 
     public User() {}
 
@@ -25,16 +21,10 @@ public class User {
         this.name = name;
     }
 
-    public User(String name, int passwordHash, boolean administratorFlag) {
+    public User(String name, int passwordHash, boolean isAnAdministrator) {
         this.name = name;
         this.passwordHash = passwordHash;
-        this.administratorFlag = administratorFlag;
-    }
-
-    public User(long userId, String name, int passwordHash) {
-        this.userId = userId;
-        this.name = name;
-        this.passwordHash = passwordHash;
+        this.isAnAdministrator = isAnAdministrator;
     }
 
     public User(String name, int passwordHash) {
@@ -42,24 +32,14 @@ public class User {
         this.passwordHash = passwordHash;
     }
 
-    public long getUserId() {
-        return userId;
-    }
-
-    public void setId(long userId) {
-        this.userId = userId;
-    }
-
-    public void setUserId(long userId) {
-        this.userId = userId;
-    }
-
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
-        this.name = name;
+        if (name != null) {
+            this.name = name;
+        }
     }
 
     public int getPasswordHash() {
@@ -70,13 +50,20 @@ public class User {
         this.passwordHash = passwordHash;
     }
 
+    public boolean isAnAdministrator() {
+        return isAnAdministrator;
+    }
+
+    public void setAnAdministrator(boolean anAdministrator) {
+        isAnAdministrator = anAdministrator;
+    }
+
     @Override
     public String toString() {
         return "User{" +
-                "userId=" + userId +
-                ", name='" + name + '\'' +
+                "name='" + name + '\'' +
                 ", passwordHash=" + passwordHash +
-                ", administrator=" + administratorFlag +
+                ", administrator=" + isAnAdministrator +
                 '}';
     }
 }

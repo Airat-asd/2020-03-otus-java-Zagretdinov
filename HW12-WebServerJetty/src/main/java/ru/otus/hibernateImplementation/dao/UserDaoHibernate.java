@@ -1,6 +1,5 @@
 package ru.otus.hibernateImplementation.dao;
 
-
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,10 +21,10 @@ public class UserDaoHibernate implements UserDao {
     }
 
     @Override
-    public Optional<User> findById(long id) {
+    public Optional<User> findByName(String name) {
         DatabaseSessionHibernate currentSession = sessionManager.getCurrentSession();
         try {
-            return Optional.ofNullable(currentSession.getHibernateSession().find(User.class, id));
+            return Optional.ofNullable(currentSession.getHibernateSession().find(User.class, name));
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
@@ -33,13 +32,16 @@ public class UserDaoHibernate implements UserDao {
     }
 
     @Override
-    public long insert(User user) {
+    public void insert(User user) {
         DatabaseSessionHibernate currentSession = sessionManager.getCurrentSession();
         try {
-            Session hibernateSession = currentSession.getHibernateSession();
-            hibernateSession.persist(user);
-            hibernateSession.flush();
-            return user.getUserId();
+            if ( ! (user.getName().isEmpty())) {
+                Session hibernateSession = currentSession.getHibernateSession();
+                hibernateSession.persist(user);
+                hibernateSession.flush();
+            } else {
+                throw new DaoException(new Exception("Имя не может быть пустым."));
+            }
         } catch (Exception e) {
             throw new DaoException(e);
         }
@@ -56,18 +58,18 @@ public class UserDaoHibernate implements UserDao {
         }
     }
 
+    //метод надо доработать
     @Override
-    public long insertOrUpdate(User user) {
+    public void insertOrUpdate(User user) {
         DatabaseSessionHibernate currentSession = sessionManager.getCurrentSession();
         try {
             Session hibernateSession = currentSession.getHibernateSession();
-            if (user.getUserId() > 0) {
+            if (! (user.getName().isEmpty())) {
                 hibernateSession.merge(user);
             } else {
                 hibernateSession.persist(user);
                 hibernateSession.flush();
             }
-            return user.getUserId();
         } catch (Exception e) {
             throw new DaoException(e);
         }

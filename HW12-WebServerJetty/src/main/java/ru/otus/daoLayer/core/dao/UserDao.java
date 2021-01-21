@@ -7,13 +7,13 @@ import java.util.Optional;
 
 public interface UserDao {
 
-    long insert(User user);
+    void insert(User user);
 
     void update(User user);
 
-    long insertOrUpdate(User user);
+    void insertOrUpdate(User user);
 
-    Optional<User> findById(long id);
+    Optional<User> findByName(String name);
 
     SessionManager getSessionManager();
 }
