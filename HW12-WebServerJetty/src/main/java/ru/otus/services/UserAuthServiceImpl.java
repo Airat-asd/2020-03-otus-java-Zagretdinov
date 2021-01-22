@@ -12,12 +12,13 @@ public class UserAuthServiceImpl implements UserAuthService {
 
     @Override
     public boolean authenticate(String name, String password) {
-        dbServiceUser.getUser(name);
-//
-//        return userDao.findByLogin(login)
-//                .map(user -> user.getPassword().equals(password))
-//                .orElse(false);
-        return true;
+        boolean authenticate = false;
+        Optional<User> user = dbServiceUser.getUser(name);
+        if (user.isPresent()) {
+            if ((password.hashCode() == user.get().getPasswordHash()) && (user.get().isAnAdministrator() == 'y')) {
+                authenticate =true;
+            }
+        }
+         return authenticate;
     }
-
 }
