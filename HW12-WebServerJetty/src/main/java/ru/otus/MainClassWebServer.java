@@ -32,14 +32,14 @@ public class MainClassWebServer {
 
     public static void main(String[] args) throws Exception {
         DBServiceUser dbServiceUser = createDBServiceUser();
-        dbServiceUser.saveUser(new User("Administrator", "asdasdassdsdsdds34534534fsd".hashCode(), true));
-        dbServiceUser.saveUser(new User("Vasia", "asdasdas".hashCode()));
-        dbServiceUser.saveUser(new User("Petia", "asdasdas".hashCode()));
-        dbServiceUser.saveUser(new User("Kolia", "asdasdas".hashCode()));
-        Optional<User> administrator = dbServiceUser.getUser("Administrator");
-        logger.info("user = {}", administrator.orElse(null));
-        Optional<User> vasia = dbServiceUser.getUser("Vasia");
-        logger.info("user = {}", vasia.orElse(null));
+//        dbServiceUser.saveUser(new User("Administrator", "asdasdassdsdsdds34534534fsd".hashCode(), 'y'));
+//        dbServiceUser.saveUser(new User("Vasia", "asdasdas".hashCode()));
+//        dbServiceUser.saveUser(new User("Petia", "asdasdas".hashCode()));
+//        dbServiceUser.saveUser(new User("Kolia", "asdasdas".hashCode()));
+//        Optional<User> administrator = dbServiceUser.getUser("Administrator");
+//        logger.info("user = {}", administrator.orElse(null));
+//        Optional<User> vasia = dbServiceUser.getUser("Vasia");
+//        logger.info("user = {}", vasia.orElse(null));
 
         Gson gson = new GsonBuilder().serializeNulls().setPrettyPrinting().create();
         TemplateProcessor templateProcessor = new TemplateProcessorImpl(TEMPLATES_DIR);
