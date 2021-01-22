@@ -11,8 +11,6 @@ public interface UserDao {
 
     void update(User user);
 
-    void insertOrUpdate(User user);
-
     Optional<User> findByName(String name);
 
     SessionManager getSessionManager();
