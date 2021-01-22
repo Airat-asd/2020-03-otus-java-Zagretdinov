@@ -43,6 +43,7 @@ public class UserDaoHibernate implements UserDao {
                 throw new DaoException(new Exception("Имя не может быть пустым."));
             }
         } catch (Exception e) {
+            System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             throw new DaoException(e);
         }
     }
@@ -58,23 +59,21 @@ public class UserDaoHibernate implements UserDao {
         }
     }
 
-    //метод надо доработать
-    @Override
-    public void insertOrUpdate(User user) {
-        DatabaseSessionHibernate currentSession = sessionManager.getCurrentSession();
-        try {
-            Session hibernateSession = currentSession.getHibernateSession();
-            if (! (user.getName().isEmpty())) {
-                hibernateSession.merge(user);
-            } else {
-                hibernateSession.persist(user);
-                hibernateSession.flush();
-            }
-        } catch (Exception e) {
-            throw new DaoException(e);
-        }
-    }
-
+//    @Override
+//    public void insertOrUpdate(User user) {
+//        DatabaseSessionHibernate currentSession = sessionManager.getCurrentSession();
+//        try {
+//            Session hibernateSession = currentSession.getHibernateSession();
+//            if (! (user.getName().isEmpty())) {
+//                hibernateSession.merge(user);
+//            } else {
+//                hibernateSession.persist(user);
+//                hibernateSession.flush();
+//            }
+//        } catch (Exception e) {
+//            throw new DaoException(e);
+//        }
+//    }
 
     @Override
     public SessionManager getSessionManager() {
