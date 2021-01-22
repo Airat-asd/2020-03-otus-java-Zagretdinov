@@ -13,7 +13,7 @@ public class User {
     private int passwordHash;
 
     @Column(name = "isAnAdministrator")
-    private boolean isAnAdministrator = false;
+    private char isAnAdministrator = 'n';
 
     public User() {}
 
@@ -21,7 +21,7 @@ public class User {
         this.name = name;
     }
 
-    public User(String name, int passwordHash, boolean isAnAdministrator) {
+    public User(String name, int passwordHash, char isAnAdministrator) {
         this.name = name;
         this.passwordHash = passwordHash;
         this.isAnAdministrator = isAnAdministrator;
@@ -50,11 +50,11 @@ public class User {
         this.passwordHash = passwordHash;
     }
 
-    public boolean isAnAdministrator() {
+    public char isAnAdministrator() {
         return isAnAdministrator;
     }
 
-    public void setAnAdministrator(boolean anAdministrator) {
+    public void setAnAdministrator(char anAdministrator) {
         isAnAdministrator = anAdministrator;
     }
 
